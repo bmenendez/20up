@@ -13,65 +13,145 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <title>Tuentiup by bmenendez</title>
+    <title>tuentiUp by bmenendez</title>
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-15476124-11', 'bmenendez.github.io');
+      ga('send', 'pageview');
+
+    </script>
   </head>
 
   <body>
     <header>
       <div class="inner">
-        <h1>Tuentiup</h1>
-        <h2>TuentiUp is a program for the backup of Tuenti, a Spanish social network. This program downloads all of the photos, comments, private messages and friends&#39; information of a specific user.</h2>
-        <a href="https://github.com/bmenendez/tuentiUp" class="button"><small>View project on</small>GitHub</a>
+        <h1>tuentiUp</h1>
+        <h2>tuentiUp es un programa para hacer un backup de Tuenti. Descarga todas tus fotos, comentarios, mensajes privados e informaci&oacute;n de tus contactos (cumplea&ntilde;os y n&uacute;mero de tel&eacute;fono).</h2>
+        <a href="https://github.com/bmenendez/tuentiUp" class="button"><small>Ver proyecto en</small>GitHub</a>
       </div>
     </header>
 
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+          <h2>
+<a name="bienvenido-a-tuentiUp" class="anchor" href="#bienvenido-a-tuentiUp"><span class="octicon octicon-link"></span></a>Bienvenido a tuentiUp</h2>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>&iexcl;Con tuentiUp podr&aacute;s hacer un backup completo de todo tu Tuenti! Despreoc&uacute;pate de si tus amigos te env&iacute;an las fotos de la fiesta de ayer o de si te da pereza ver los comentarios que te pusieron hace 10 meses :)</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<p>Con <b>tuentiUp</b> podr&aacute;s:
+<ul>
+    <li>Descargar <b>todos</b> tus <b>&aacute;lbumes de fotos</b>, ordenando las im&aacute;genes por fecha como en Tuenti.</li>
+    <li>Descargar <b>todos</b> tus <b>mensajes privados</b>, orden&aacute;ndolos por fecha como en Tuenti.</li>
+    <li>Descargar <b>todos</b> tus <b>comentarios de tabl&oacute;n</b> orden&aacute;ndolos por fecha como en Tuenti.</li>
+    <li>Descargar los <b>cumplea&ntilde;os</b> y <b>n&uacute;meros de tel&eacute;fono</b> de <b>todos</b> tus contactos Tuenti.</li>
+</ul>
+</p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>Sigue las instrucciones de uso para ordenadores con <b><a href="http://bmenendez.github.io/tuentiUp#Windows">Windows</a></b> y para ordenadores con <b><a href="http://bmenendez.github.io/tuentiUp#Linux">Linux</a></b>. En cualquier caso, primeramente necesitar&aacute;s tu cookie de Tuenti. Mira c&oacute;mo conseguirla <a href="http://bmenendez.github.io/tuentiUp#como-conseguir-cookie-tuenti">aqu&iacute;</a>.</p>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<h2>
+<a name="Windows" class="anchor" href="#Windows"><span class="octicon octicon-link"></span></a>Usuarios de Windows</h2>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Por el momento, el ejecutable de <b>tuentiUp</b> no est&aacute; disponible para ordenadores con Windows, aunque pronto lo estar&aacute; ;-). Aun as&iacute;, siempre puedes investigar e instalar <i>python</i> y su paquete <i>Requests</i> y hacerlo funcionar (no soy ning&uacute;n experto en Windows); si lo consigues, h&aacute;zmelo saber a trav&eacute;s del <a href="http://bmenendez.github.io/tuentiUp#contacto">contacto</a> para que los dem&aacute;s tambi&eacute;n lo disfruten.</p>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<h2>
+<a name="Linux" class="anchor" href="#Linux"><span class="octicon octicon-link"></span></a>Usuarios de Linux</h2>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>Para usar <b>tuentiUp</b>, primero <a href="https://github.com/bmenendez/tuentiUp/tarball/master">desc&aacute;rgalo</a> y descompr&iacute;melo en tu ordenador o bien clona con git <a href="https://github.com/bmenendez/tuentiUp">el proyecto</a>.</p>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<p><b>tuentiUp</b> solo depende de un m&oacute;dulo externo a python: <a href="http://docs.python-requests.org">Requests</a>. Desc&aacute;rgalo con pip:</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p><code>$ sudo pip install requests</code></p>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<p>Una vez instalado Requests, m&eacute;tete con la terminal en el directorio donde descargaste <b>tuentiUp</b> y ejecuta:</p>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p><code>python tuentiUp.py</code></p>
+
+<p>Consigue <a href="http://bmenendez.github.io/tuentiUp#como-conseguir-cookie-tuenti">tu cookie de Tuenti</a> y disfruta del programa :).</p>
+
+<h2>
+<a name="como-conseguir-cookie-tuenti" class="anchor" href="#como-conseguir-cookie-tuenti"><span class="octicon octicon-link"></span></a>C&oacute;mo conseguir tu cookie de Tuenti</h2>
+
+<p>Antes de nada, inicia sesi&oacute;n con tu cuenta en Tuenti. As&iacute; tendr&aacute;s actualizada tu cookie.</p>
+
+<p><h3>En Google Chrome</h3></p>
+
+<p>Configuraci&oacute;n &rarr; Mostrar opciones avanzadas... &rarr; En &quot;Privacidad&quot;, darle a &quot;Configuraci&oacute;n de contenido...&quot; &rarr; En &quot;Cookies&quot;, darle a &quot;Todas las cookies y los datos de sitios...&quot; &rarr; Buscar &quot;tuenti&quot;, pinchar en ella y en la que pone &quot;sid&quot; &rarr; copiar la cadena de caracteres que pone a continuaci&oacute;n de &quot;Contenido:&quot;.</p>
+
+<p><h3>En Firefox para Linux</h3></p>
+
+<p>Editar &rarr; Preferencias &rarr; Pesta&ntilde;a de Privacidad &rarr; Mostrar cookies... &rarr; Buscar &quot;tuenti&quot; &rarr; Copiar el contenido de la cookie &quot;sid&quot;.</p>
+
+<p><h3>En Firefox para Windows</h3></p>
+
+<h2>
+<a name="que-pasa-si-no-me-funciona" class="anchor" href="#que-pasa-si-no-me-funciona"><span class="octicon octicon-link"></span></a>&iquest;Qu&eacute; pasa si no me funciona?</h2>
+
+<p>No te preocupes, siempre puedes ponerte en <a href="http://bmenendez.github.io/tuentiUp#contacto">contacto</a> conmigo especific&aacute;ndome el problema e intentar&eacute; solucionarlo lo antes posible.</p>
+
+<h2>
+<a name="contacto" class="anchor" href="#contacto"><span class="octicon octicon-link"></span></a>Contacto</h2>
+
+<p>Si tienes alg&uacute;n problema, sugerencia, mejora, aporte o comentario sobre <b>tuentiUp</b>, por favor, no dudes en contactar conmigo. Puedes hacerlo a trav&eacute;s de varios medios:
+<ul>
+    <li>Correo electr&oacute;nico: <a href="mailto:borjamonserrano@gmail.com">borjamonserrano@gmail.com</a>.</li>
+    <li>Twitter: <a href="http://twitter.com/borjamonserrano">@borjamonserrano</a>.</li>
+    <li>Github: <a href="http://github.com/bmenendez">bmenendez</a>.</li>
+</ul>
+</p>
+
+<h2>
+<a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
+
+<p><b>tuentiUp</b> es una aplicaci&oacute;n realizada con el &uacute;nico prop&oacute;sito de poder hacer un backup de tu cuenta de Tuenti, es decir, de datos que son exclusivamente tuyos. El desarrollador no se responsabiliza del uso que se le pueda dar a la aplicaci&oacute;n.</p>
+
+<h2>
+<a name="licencia" class="anchor" href="#licencia"><span class="octicon octicon-link"></span></a>Licencia</h2>
+
+<p><b>tuentiUp</b> est&aacute; licenciado bajo GNU General Public License (GPL), versi&oacute;n 3 o posterior. Tienes el texto oficial de la licencia en la <a href="http://www.gnu.org/licenses/gpl-3.0.html">p&aacute;gina oficial</a> de GNU. Tambi&eacute;n puedes ver la traducci&oacute;n al espa&ntilde;ol aceptada por GNU de esta licencia en el <a href="http://hjmacho.github.io/translation_GPLv3_to_spanish/">siguiente enlace</a>.</p>
+
+<h2>
+<a name="roadmap" class="anchor" href="#roadmap"><span class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<p>0.1 beta:
+<ul>
+    <li>Backup de fotos mejorado (a&ntilde;adido que si ya existe la foto, no se vuelve a descargar).</li>
+    <li>Backup de mensajes privados.</li>
+    <li>Backup de comentarios en el tabl&oacute;n.</li>
+    <li>Backup de amigos (cumplea&ntilde;os y n&uacute;meros de tel&eacute;fono).</li>
+</ul>
+</p>
+
+<p>0.1 alfa:
+<ul>
+    <li>Backup de fotos.</li>
+</ul>
+</p>
         </section>
 
         <aside id="sidebar">
+        <!--
+          <a href="jajaja" class="button">
+            <small>Descarga</small>
+            Windows
+          </a>
+        -->
           <a href="https://github.com/bmenendez/tuentiUp/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
+            <small>Descarga</small>
+            .zip
           </a>
           <a href="https://github.com/bmenendez/tuentiUp/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
+            <small>Descarga</small>
+            .tar.gz
           </a>
 
-          <p class="repo-owner"><a href="https://github.com/bmenendez/tuentiUp"></a> is maintained by <a href="https://github.com/bmenendez">bmenendez</a>.</p>
+          <p class="repo-owner"><a href="https://github.com/bmenendez/tuentiUp">tuentiUp</a> est&aacute; mantenido por <a href="https://github.com/bmenendez">bmenendez</a>.</p>
 
           <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
         </aside>
