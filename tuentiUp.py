@@ -28,7 +28,7 @@ friends' information of a specific user.
 """
 
 import math, os, httplib, requests, string
-import re, getpass
+import re, getpass, urllib2
 from time import sleep
 
 from APtuentI import APtuentI
@@ -352,7 +352,23 @@ def backupUsers(myTuenti):
     fileToWrite.close()
     
 def sendPrivateMessageToFriends(myTuenti):
-    print 'enviando un privado a todos tus contactos'
+    print '|'
+    print '| Gracias por valorar la aplicación y darme a conocer :)'
+    print '|'
+    
+    text = 'Hola,\r\n'
+    text += 'Acabo de utilizar tuentiUp para descargarme todas mis '
+    text += 'fotos de Tuenti. Si quieres conocerlo:\r\n'
+    text += web + '\r\n'
+    text += 'Un abrazo :)'
+    
+    print '| Obteniendo todos tus contactos'
+    totalFriends = myTuenti.getFriendsData()
+    
+    for friend in totalFriends[0]['friends']:
+        print '| Enviando mensaje privado a ' + friend['name'] + \
+              ' ' + friend['surname'] + '...'
+        myTuenti.sendMessage(friend['id'], text)
 
 def main(cookie):
     while True:
@@ -362,6 +378,9 @@ def main(cookie):
             cookie = getCookie(True)
         except KeyError:
             break
+            
+    text = 'Utilizando tuentiUp para descargarme todas mis fotos :) ' + web
+    myTuenti.setUserStatus(text)
             
     respuesta = '0'
     while respuesta != '7':
@@ -395,4 +414,22 @@ def main(cookie):
 
 if __name__ == '__main__':
     printWelcome()
-    main(getCookie(False))
+    while True:
+        try:
+            main(getCookie(False))
+            break
+        except urllib2.URLError:
+            print '|'
+            print '| No hay conexion a internet'
+            print '|'
+            break
+        except KeyboardInterrupt:
+            print
+            print '|'
+            print '| Cerrando aplicacion...'
+            print '|'
+            break
+        except Exception:
+            print '|'
+            print '| Ha ocurrido un error inesperado'
+            print '|'
