@@ -176,8 +176,7 @@ def backupPhotos(myTuenti):
     
     for album in dicPhotos:
         albumName = dicPhotos[album][0]
-        albumName = albumName.replace('/', '-')
-        albumName = albumName.replace('\\', '-')
+        albumName = re.sub('[^a-zA-Z0-9\n\.]', '-', albumName)
         size = dicPhotos[album][1]
         
         albumPath = os.path.join(theJoinPath, albumName)
@@ -204,9 +203,7 @@ def backupPhotos(myTuenti):
             for elem in mf[0]['album']:
                 url = elem['photo_url_600']
                 title = elem['title']
-                title = title.replace(' ', '_')
-                title = title.replace('/', '_')
-                title = title.replace('>', '_')
+                title = re.sub('[^a-zA-Z0-9\n\.]', '-', title)
                 
                 fileName = string.zfill(myCounter, maxFill) + '_' + title + '.jpg'
                 if not os.path.exists(fileName):
@@ -429,7 +426,7 @@ if __name__ == '__main__':
             print '| Cerrando aplicacion...'
             print '|'
             break
-        except Exception:
+        except Exception, e:
             print '|'
-            print '| Ha ocurrido un error inesperado'
+            print '| Ha ocurrido un error inesperado:', e
             print '|'
