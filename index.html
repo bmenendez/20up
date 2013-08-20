@@ -53,12 +53,24 @@
 </ul>
 </p>
 
-<p>Sigue las instrucciones de uso para ordenadores con <b><a href="http://bmenendez.github.io/tuentiUp#Windows">Windows</a></b> y para ordenadores con <b><a href="http://bmenendez.github.io/tuentiUp#Linux">Linux</a></b>. En cualquier caso, primeramente necesitar&aacute;s tu cookie de Tuenti. Mira c&oacute;mo conseguirla <a href="http://bmenendez.github.io/tuentiUp#como-conseguir-cookie-tuenti">aqu&iacute;</a>.</p>
+<p>Sigue las instrucciones de uso para ordenadores con <b><a href="http://bmenendez.github.io/tuentiUp#Windows">Windows</a></b> y para ordenadores con <b><a href="http://bmenendez.github.io/tuentiUp#Linux">Linux</a></b>. Para ordenadores con Mac no he podido probar nada, pero os dejo en esta secci&oacute;n un peque&ntilde;o <a href="http://bmenendez.github.io/tuentiUp#mac-tutorial">tutorial</a> por si se pudiera ejecutar correctamente. En cualquier caso, primeramente necesitar&aacute;s tu cookie de Tuenti. Mira c&oacute;mo conseguirla <a href="http://bmenendez.github.io/tuentiUp#como-conseguir-cookie-tuenti">aqu&iacute;</a>.</p>
 
 <h2>
 <a name="Windows" class="anchor" href="#Windows"><span class="octicon octicon-link"></span></a>Usuarios de Windows</h2>
 
-<p>Por el momento, el ejecutable de <b>tuentiUp</b> no est&aacute; disponible para ordenadores con Windows, aunque pronto lo estar&aacute; ;-). Aun as&iacute;, siempre puedes investigar e instalar <i>python</i> y su paquete <i>Requests</i> y hacerlo funcionar (no soy ning&uacute;n experto en Windows); si lo consigues, h&aacute;zmelo saber a trav&eacute;s del <a href="http://bmenendez.github.io/tuentiUp#contacto">contacto</a> para que los dem&aacute;s tambi&eacute;n lo disfruten.</p>
+<p>Hay dos formas de utilizar el programa en Windows. La primera es la m&aacute;s sencilla, aunque la segunda es v&aacute;lida tambi&eacute;n (en caso de que no funcionase la primera sobre todo):</p>
+
+<p>Descargar el ejecutable*, hacer doble clic en &eacute;l y seguir las instrucciones. *Nota: pronto estar&aacute; disponible.</p>
+
+<p>La segunda opci&oacute;n:
+<ul>
+    <li>Descargar python 2.7 de la <a href="http://www.python.org/getit/">p&aacute;gina oficial</a>. O directamente de <a href="http://www.python.org/ftp/python/3.3.2/python-3.3.2.msi">este enlace</a> (sacado de la p&aacute;gina oficial). Una vez instalado, modificar la variable de entorno PATH; para ello, bastar&aacute; con clic derecho en &quot;Mi PC&quot; o equivalente &rarr; Propiedades &rarr;...</li>
+    <li>Instalar <a href="https://pypi.python.org/pypi/setuptools/1.0#windows">SetupTools</a>* y modificar la variable de entorno PATH como se ha especificado anteriormente, pero a&ntilde;adiendo esta vez el directorio &quot;Scripts&quot; de la instalaci&oacute;n de python. *Nota: para ejecutar cualquier script de python basta con teclear en una consola de sistema <code>python nombreScript.py</code>, donde &quot;nombreScript.py&quot; es el script que quieres ejecutar.</li>
+    <li>Instalar el m&oacute;dulo de python &quot;Requests&quot;: abrir una consola de sistema (buscar &quot;cmd&quot;) y poner <code>easy_install requests</code>.</li>
+    <li>Descargar el <a href="https://github.com/bmenendez/tuentiUp/zipball/master">c&oacute;digo fuente</a> de <b>tuentiUp</b> y descompr&iacute;melo donde quieras.</li>
+    <li>Una vez instalado Requests, acceder mediante consola al directorio donde tengamos <b>tuentiUp</b> y ejecutar <code>python tuentiUp.py</code>. Seguir las instrucciones.</li>
+</ul>
+</p>
 
 <h2>
 <a name="Linux" class="anchor" href="#Linux"><span class="octicon octicon-link"></span></a>Usuarios de Linux</h2>
@@ -76,9 +88,20 @@
 <p>Consigue <a href="http://bmenendez.github.io/tuentiUp#como-conseguir-cookie-tuenti">tu cookie de Tuenti</a> y disfruta del programa :).</p>
 
 <h2>
+<a name="mac-tutorial" class="anchor" href="#mac-tutorial"><span class="octicon octicon-link"></span></a>Usuarios de Mac</h2>
+
+<p><b>tuentiUp</b> NO ha sido probado en Mac todav&iacute;a. No s&eacute; si python viene instalado por defecto en Mac, pero por si las moscas, pongo aqu&iacute; simplemente enlaces para que puedas ejecutar python en Mac sin problemas y, as&iacute;, conseguir utilizar <b>tuentiUp</b>. Nada de lo puesto aqu&iacute; ha sido probado tampoco.</p>
+
+<p>Instala python <a href="http://docs.python.org/2/using/mac.html">en Mac</a>.</p>
+
+<p>Instala <a href="http://pootle.python.org/build/es/install/index.html">Distutils</a>, que servir&aacute; para descargar el m&oacute;dulo Requests. Instala este m&oacute;dulo a continuaci&oacute;n.</p>
+
+<p>Descarga <a href="https://github.com/bmenendez/tuentiUp/tarball/master">tuentiUp</a> y ejec&uacute;talo a trav&eacute;s de la terminal. Para ello, ejecuta <code>python tuentiUp.py</code> y sigue las instrucciones.</p> 
+
+<h2>
 <a name="como-conseguir-cookie-tuenti" class="anchor" href="#como-conseguir-cookie-tuenti"><span class="octicon octicon-link"></span></a>C&oacute;mo conseguir tu cookie de Tuenti</h2>
 
-<p>Antes de nada, inicia sesi&oacute;n con tu cuenta en Tuenti. As&iacute; tendr&aacute;s actualizada tu cookie.</p>
+<p>Antes de nada, inicia sesi&oacute;n con tu cuenta en Tuenti en Google Chrome o Firefox*. As&iacute; tendr&aacute;s actualizada tu cookie. *Nota: no se ha probado a obtener la cookie en ning&uacute;n otro navegador web; si no sabes c&oacute;mo obtenerla en tu navegador, mejor utiliza uno de estos dos para seguir las instrucciones que vienen a continuaci&oacute;n.</p>
 
 <p><h3>En Google Chrome</h3></p>
 
@@ -90,7 +113,7 @@
 
 <p><h3>En Firefox para Windows</h3></p>
 
-<p><h3>En Internet Explorer</h3></p>
+<p>Dar al bot&oacute;n naranja &quot;Firefox&quot; &rarr; Opciones &rarr; Pesta&ntilde;a de Privacidad &rarr; Mostrar cookies... &rarr; Buscar &quot;tuenti&quot; &rarr; Copiar el contenido de la cookie &quot;sid&quot;.</p>
 
 <h2>
 <a name="que-pasa-si-no-me-funciona" class="anchor" href="#que-pasa-si-no-me-funciona"><span class="octicon octicon-link"></span></a>&iquest;Qu&eacute; pasa si no me funciona?</h2>
@@ -154,13 +177,11 @@
         </section>
 
         <aside id="sidebar">
-          <iframe src="//www.facebook.com/plugins/likebox.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FTuentiup%2F189617151215822&amp;width=292&amp;height=290&amp;colorscheme=light&amp;show_faces=true&amp;header=true&amp;stream=false&amp;show_border=true&amp;appId=218705961618246" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:290px;" allowTransparency="true"></iframe>
-        <!--
-          <a href="jajaja" class="button">
+          <iframe src="//www.facebook.com/plugins/likebox.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FTuentiup%2F189617151215822&amp;width=200&amp;height=290&amp;colorscheme=light&amp;show_faces=true&amp;header=true&amp;stream=false&amp;show_border=true&amp;appId=218705961618246" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:200px; height:290px;" allowTransparency="true"></iframe>
+          <a href="https://github.com/bmenendez/tuentiUp/windows/tuentiUp.exe" class="button">
             <small>Descarga</small>
             Windows
           </a>
-        -->
           <a href="https://github.com/bmenendez/tuentiUp/zipball/master" class="button">
             <small>Descarga</small>
             .zip
