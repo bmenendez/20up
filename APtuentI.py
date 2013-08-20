@@ -37,12 +37,8 @@ class APtuentI:
     allowing the program to do what it wants to backup a Tuenti account.
     """
     
-    def __init__(self, SID):
-        """
-        The Session ID (SID) is needed, it is not yet implemented the login
-        with user and password.
-        """
-        self.sid = SID
+    def __init__(self):
+        self.sid = ''
         self.apiversion = '0.7.1'
         self.api = 'http://api.tuenti.com/api/'
         
@@ -52,6 +48,22 @@ class APtuentI:
         response = urllib2.urlopen(request, json.dumps(data))
         response = json.load(response)
         return response
+        
+    def setSessionID(self, SID):
+        self.sid = SID
+        
+    def doLogin(self):
+        """Do the login in the Tuenti API server"""
+        data = {'version':self.apiversion, 'requests':[['getChallenge', \
+                {'type':'login'}]]}
+        return self.getResponse(data)
+        
+    def getSession(self, timestamp, seed, passcode, appKey, email):
+        """Get the session (the Session ID needed to do everything"""
+        data = {'version':self.apiversion, 'requests':[['getSession', \
+                {'timestamp':timestamp, 'seed':seed, 'passcode':passcode, \
+                'application_key':appKey, 'email':email}]]}
+        return self.getResponse(data)
         
     def getUsersData(self, userid):
         """Get the user's data. It returns a JSON response with the

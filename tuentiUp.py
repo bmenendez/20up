@@ -28,15 +28,17 @@ friends' information of a specific user.
 """
 
 import math, os, httplib, requests, string
-import re, getpass, urllib2
+import re, getpass, urllib2, hashlib
 from time import sleep
 
 from APtuentI import APtuentI
 from MyHTMLParser import MyHTMLParser
 
 version = '0.3 beta'
+debug = True
 web = 'http://bmenendez.github.io/tuentiUp'
 twitter = '@borjamonserrano'
+appkey = 'MDI3MDFmZjU4MGExNWM0YmEyYjA5MzRkODlmMjg0MTU6MC4xMzk0ODYwMCAxMjYxMDYwNjk2'
 
 def printWelcome():
     os.system('cls' if os.name=='nt' else 'clear')
@@ -112,24 +114,15 @@ def printHelp():
     print '| Tambien puedes seguirme en twitter: ' + twitter
     print '-' * 60
     
-def getCookie(witherror):
+def getData(withError):
+    os.system('cls' if os.name == 'nt' else 'clear')
     print '-' * 60
-    if witherror:
-        print '| La cookie que has introducido no es valida'
-        print '| Asegurate de que la cookie es nueva (inicia sesion en Tuenti)'
+    if withError:
+        print '| Parece que no has introducido bien tus datos'
+        print '| Por favor, escribe de nuevo...'
     else:
-        print '| Primero de todo, necesito un dato para poder hacer'
-        print '| la mayoria del backup...'
-    print '-' * 60
-
-    cookie = raw_input('Cookie: ')
-    
-    return cookie
-    
-def getData():
-    print '-' * 60
-    print '| Para poder hacer un backup de los privados'
-    print '| necesito un poco mas de informacion sobre ti...'
+        print '| Para poder hacer el backup necesito'
+        print '| un poco mas de informacion sobre ti...'
     print
     email = raw_input('E-mail: ')
     while not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -139,8 +132,7 @@ def getData():
     
     return email, password
     
-def backupTotal(myTuenti):
-    email, password = getData()
+def backupTotal(myTuenti, email, password):
     backupPhotos(myTuenti)
     backupPrivateMessages(myTuenti, email, password)
     backupComments(myTuenti)
@@ -152,12 +144,14 @@ def backupPhotos(myTuenti):
     print '| Obteniendo los nombres de tus albumes...'
     dicPhotos = {}
     i = 0
+    totalPhotos = 0
     while True:
         albums = myTuenti.getUserAlbums(i)
         counter = 0
         for album in albums[0]:
             counter += 1
             dicPhotos[album] = [albums[0][album]['name'], albums[0][album]['size']]
+            totalPhotos += int(albums[0][album]['size'])
             
         if counter < 20:
             break
@@ -174,6 +168,7 @@ def backupPhotos(myTuenti):
     
     s = requests.Session()
     
+    totalCounter = 0
     for album in dicPhotos:
         albumName = dicPhotos[album][0]
         albumName = re.sub('[^a-zA-Z0-9\n\.]', '-', albumName)
@@ -189,31 +184,38 @@ def backupPhotos(myTuenti):
         
         myCounter = int(size)
         maxFill = len(str(size))
-        iters = size / 20.0
+        iters = myCounter / 20.0
         if math.fmod(iters, 1) != 0.0:
             iters += 1
         iters = int(iters)
+        totalPhotosAlbum = myCounter
         
         print '|'
         print '| Descargando fotos del album ' + albumName + '...'
         print '|'
         
+        partialCounter = 0
         for i in range(0, iters):
             mf = myTuenti.getAlbumPhotos(album, i)
             for elem in mf[0]['album']:
                 url = elem['photo_url_600']
                 title = elem['title']
                 title = re.sub('[^a-zA-Z0-9\n\.]', '-', title)
+                partialCounter += 1
+                totalCounter += 1
                 
                 fileName = string.zfill(myCounter, maxFill) + '_' + title + '.jpg'
                 if not os.path.exists(fileName):
-                    print '| Descargando foto ' + title + '...'
-                    with open(fileName, 'wb') as handle:
-                        r = s.get(url)
-                        for block in r.iter_content(1024):
-                            if not block:
-                                break
-                            handle.write(block)
+                    partialPerc = 100 * partialCounter / totalPhotosAlbum
+                    totalPerc = 100 * totalCounter / totalPhotos
+                    percs = '[' + str(totalPerc) + '% total] ['
+                    percs += str(partialPerc) + '% album] '
+                    print '| ' + percs + 'Descargando foto ' + title + '...'
+                    response = urllib2.urlopen(url)
+                    read = response.read()
+                    fileToWrite = open(fileName, 'wb')
+                    fileToWrite.write(read)
+                    fileToWrite.close()
                         
                     sleep(0.5)
                     
@@ -367,17 +369,24 @@ def sendPrivateMessageToFriends(myTuenti):
               ' ' + friend['surname'] + '...'
         myTuenti.sendMessage(friend['id'], text)
 
-def main(cookie):
+def main():
+    email, password = getData(False)
+    myTuenti = APtuentI()
+    login = myTuenti.doLogin()
     while True:
-        myTuenti = APtuentI(cookie)
         try:
-            myTuenti.getFriendsData()[0]['error']
-            cookie = getCookie(True)
-        except KeyError:
+            passcode = hashlib.md5(login[0]['challenge'] + \
+                            hashlib.md5(password).hexdigest()).hexdigest()
+            out = myTuenti.getSession(login[0]['timestamp'], \
+                                login[0]['seed'], passcode, appkey, email)
+            myTuenti.setSessionID(out[0]['session_id'])
             break
-            
-    text = 'Utilizando tuentiUp para descargarme todas mis fotos :) ' + web
-    myTuenti.setUserStatus(text)
+        except:
+            email, password = getData(True)
+    
+    if not debug:        
+        text = 'Utilizando tuentiUp para descargarme todas mis fotos :) ' + web
+        myTuenti.setUserStatus(text)
             
     respuesta = '0'
     while respuesta != '7':
@@ -385,11 +394,10 @@ def main(cookie):
         respuesta = raw_input('> ')
         
         if respuesta == '1':
-            backupTotal(myTuenti)
+            backupTotal(myTuenti, email, password)
         elif respuesta == '2':
             backupPhotos(myTuenti)
         elif respuesta == '3':
-            email, password = getData()
             backupPrivateMessages(myTuenti, email, password)
         elif respuesta == '4':
             backupComments(myTuenti)
@@ -413,7 +421,7 @@ if __name__ == '__main__':
     printWelcome()
     while True:
         try:
-            main(getCookie(False))
+            main()
             break
         except urllib2.URLError:
             print '|'
