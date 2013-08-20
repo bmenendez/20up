@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @author: Borja Menéndez Moreno
 @copyright: Borja Menéndez Moreno (Madrid, Spain)
 @license: GNU GPL version 3 or any later version
-@version: 0.3 beta
+@version: 0.5 beta
 
 Program for the backup of Tuenti, a Spanish social network.
 This program downloads all of the photos, comments, private messages and
