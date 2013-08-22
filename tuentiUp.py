@@ -211,11 +211,12 @@ def backupPhotos(myTuenti):
                     percs = '[' + str(totalPerc) + '% total] ['
                     percs += str(partialPerc) + '% album] '
                     print '| ' + percs + 'Descargando foto ' + title + '...'
-                    response = urllib2.urlopen(url)
-                    read = response.read()
-                    fileToWrite = open(fileName, 'wb')
-                    fileToWrite.write(read)
-                    fileToWrite.close()
+                    with open(fileName, 'wb') as handle:
+                        r = s.get(url)
+                        for block in r.iter_content(1024):
+                            if not block:
+                                break
+                            handle.write(block)
                         
                     sleep(0.5)
                     
@@ -270,8 +271,8 @@ def backupPrivateMessages(myTuenti, email, password):
     for key in keys:
         counter += 1
         percent = 100 * counter / totalMessages
-        print '| Descargando mensaje ' + str(counter) + ' de ' + \
-              str(totalMessages) + ' [' + str(percent) + '%]' + '...'
+        print '| [' + str(percent) + '%] Descargando mensaje ' + \
+              str(counter) + ' de ' + str(totalMessages) + '...'
         urlName = 'https://m.tuenti.com/?m=messaging&func=view_thread&thread_id='
         urlName += key + '&box=inbox&view_full=1'
         
@@ -419,6 +420,7 @@ def main():
 
 if __name__ == '__main__':
     printWelcome()
+    raw_input('| Pulsa ENTER para continuar')
     while True:
         try:
             main()
