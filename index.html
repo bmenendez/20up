@@ -60,19 +60,9 @@
 <h2>
 <a name="Windows" class="anchor" href="#Windows"><span class="octicon octicon-link"></span></a>Usuarios de Windows</h2>
 
-<p>Hay dos formas de utilizar el programa en Windows. La primera es la m&aacute;s sencilla, aunque la segunda es v&aacute;lida tambi&eacute;n (en caso de que no funcionase la primera sobre todo):</p>
+<p>Descargar el ejecutable, hacer clic derecho y seleccionar &quot;Ejecutar como administrador&quot; para no tener ning&uacute;n problema con el antivirus ni a la hora de descargar las im&aacute;genes en el equipo. Una vez ejecutado, seguir las instrucciones.</p>
 
-<p>Descargar el ejecutable, hacer doble clic en &eacute;l y seguir las instrucciones.</p>
-
-<p>La segunda opci&oacute;n:
-<ul>
-    <li>Descargar python 2.7 de la <a href="http://www.python.org/getit/">p&aacute;gina oficial</a>. O directamente de <a href="http://www.python.org/ftp/python/3.3.2/python-3.3.2.msi">este enlace</a> (sacado de la p&aacute;gina oficial). Una vez instalado, modificar la variable de entorno PATH; para ello, bastar&aacute; con clic derecho en &quot;Mi PC&quot; o equivalente &rarr; Propiedades &rarr;...</li>
-    <li>Instalar <a href="https://pypi.python.org/pypi/setuptools/1.0#windows">SetupTools</a>* y modificar la variable de entorno PATH como se ha especificado anteriormente, pero a&ntilde;adiendo esta vez el directorio &quot;Scripts&quot; de la instalaci&oacute;n de python. *Nota: para ejecutar cualquier script de python basta con teclear en una consola de sistema <code>python nombreScript.py</code>, donde &quot;nombreScript.py&quot; es el script que quieres ejecutar.</li>
-    <li>Instalar el m&oacute;dulo de python &quot;Requests&quot;: abrir una consola de sistema (buscar &quot;cmd&quot;) y poner <code>easy_install requests</code>.</li>
-    <li>Descargar el <a href="https://github.com/bmenendez/tuentiUp/zipball/master">c&oacute;digo fuente</a> de <b>tuentiUp</b> y descompr&iacute;melo donde quieras.</li>
-    <li>Una vez instalado Requests, acceder mediante consola al directorio donde tengamos <b>tuentiUp</b> y ejecutar <code>python tuentiUp.py</code>. Seguir las instrucciones.</li>
-</ul>
-</p>
+<p>Si esta opci&oacute;n no funcionase, existe una <a href="http://bmenendez.github.io/tuentiUp#Windows-dificil">segunda forma</a>. Requiere un poco m&aacute;s de trabajo, pero deber&iacute;a de funcionar.</p>
 
 <h2>
 <a name="Linux" class="anchor" href="#Linux"><span class="octicon octicon-link"></span></a>Usuarios de Linux</h2>
@@ -108,7 +98,7 @@
 
 <p>Es posible que tu antivirus haya bloqueado a <b>tuentiUp</b> porque no sepa su procedencia. Si tienes Avast instalado, lo normal es que el antivirus quiera ejecutar el programa en su Sandbox para que no haya problemas; para ello, bastar&aacute; con decirle que <b>tuentiUp</b> es seguro y que puede ejecutarse con normalidad. En cualquier caso, recomiendo desactivar el antivirus durante la ejecuci&oacute;n del programa, as&iacute; no habr&aacute; ning&uacute;n problema.</p>
 
-<p>Si te sigue sin funcionar, no te preocupes: siempre puedes ponerte en <a href="http://bmenendez.github.io/tuentiUp#contacto">contacto</a> conmigo especific&aacute;ndome el problema e intentar&eacute; solucionarlo lo antes posible.</p>
+<p>Si te sigue sin funcionar, no te preocupes: siempre puedes ponerte en <a href="http://bmenendez.github.io/tuentiUp#contacto">contacto</a> conmigo especific&aacute;ndome el problema e intentar&eacute; solucionarlo lo antes posible. Por favor, procura adjuntar pantallazo del error que te d&eacute; e informaci&oacute;n detallada.</p>
 
 <h3>
 <a name="se-queda-parado" class="anchor" href="#se-queda-parado"><span class="octicon octicon-link"></span></a>Hay veces que se queda parado, &iquest;es grave, doctor?</h3>
@@ -127,6 +117,19 @@
 </p>
 
 <h2>
+<a name="Windows-dificil" class="anchor" href="#Windows-dificil"><span class="octicon octicon-link"></span></a>En Windows, otra forma</h2>
+
+<p>La segunda opci&oacute;n:
+<ul>
+    <li>Descargar python 2.7 de la <a href="http://www.python.org/getit/">p&aacute;gina oficial</a>. O directamente de <a href="http://www.python.org/ftp/python/3.3.2/python-3.3.2.msi">este enlace</a> (sacado de la p&aacute;gina oficial). Una vez instalado, modificar la variable de entorno PATH; para ello, bastar&aacute; con hacer clic derecho en &quot;Mi PC&quot; o equivalente &rarr; Propiedades &rarr; Opciones avanzadas del sistema &rarr; Variables de entorno &rarr; Buscar la que se llama &quot;Path&quot; y a&ntilde;adir el directorio donde se ha instalado Python con un &quot;;&quot; antes (en mi caso &quot;;C:\Python27&quot;).</li>
+    <li>Instalar <a href="https://pypi.python.org/pypi/setuptools/1.0#windows">SetupTools</a>* y modificar la variable de entorno PATH como se ha especificado anteriormente, pero a&ntilde;adiendo esta vez el directorio &quot;Scripts&quot; de la instalaci&oacute;n de python (en mi caso &quot;;C:\Python27\Scripts&quot;). *Nota: para ejecutar cualquier script de python basta con teclear en una consola de sistema <code>python nombreScript.py</code>, donde &quot;nombreScript.py&quot; es el script que quieres ejecutar.</li>
+    <li>Instalar el m&oacute;dulo de python &quot;Requests&quot;: abrir una consola de sistema (buscar &quot;cmd&quot;) y poner <code>easy_install requests</code>.</li>
+    <li>Descargar el <a href="https://github.com/bmenendez/tuentiUp/zipball/master">c&oacute;digo fuente</a> de <b>tuentiUp</b> y descompr&iacute;melo donde quieras.</li>
+    <li>Una vez instalado Requests, acceder mediante consola al directorio donde tengamos <b>tuentiUp</b> y ejecutar <code>python tuentiUp.py</code>. Seguir las instrucciones.</li>
+</ul>
+</p>
+
+<h2>
 <a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
 
 <p><b>tuentiUp</b> es una aplicaci&oacute;n realizada con el &uacute;nico prop&oacute;sito de poder hacer un backup de tu cuenta de Tuenti, es decir, de datos que son exclusivamente tuyos. El desarrollador no se responsabiliza del uso que se le pueda dar a la aplicaci&oacute;n.</p>
@@ -138,6 +141,14 @@
 
 <h2>
 <a name="roadmap" class="anchor" href="#roadmap"><span class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<p>0.6 beta:
+<ul>
+    <li>Mejorado el sistema de descarga: reintenta descargar la foto hasta que se finalmente se obtiene.</li>
+    <li>Mejorado el nombramiento de directorios y ficheros: ahora las letras con tildes de alg&uacute;n tipo se convertir&aacute;n en letras sin tilde.</li>
+    <li>Descubierto el problema de descargas en Windows: es necesario ejecutar como administrador.</li>
+</ul>
+</p>
 
 <p>0.5 beta:
 <ul>
