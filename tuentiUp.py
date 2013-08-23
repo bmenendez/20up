@@ -213,7 +213,7 @@ def backupPhotos(myTuenti):
                     print '| ' + percs + 'Descargando foto ' + title + '...'
                     while not os.path.exists(fileName):
                         with open(fileName, 'wb') as handle:
-                            r = s.get(url)
+                            r = s.get(url, verify=False)
                             for block in r.iter_content(1024):
                                 if not block:
                                     break
@@ -248,13 +248,13 @@ def backupPrivateMessages(myTuenti, email, password):
             keys.append(message['key'])
     
     s = requests.Session()
-    r = s.get('https://m.tuenti.com/?m=Login')
+    r = s.get('https://m.tuenti.com/?m=Login', verify=False)
     csrf = re.findall('name="csrf" value="(.*?)"', r.text)[0]
 
     data = { 'csrf': csrf, 'tuentiemailaddress': email, 'password': password, 'remember': 1 }
     s.post('https://m.tuenti.com/?m=Login&f=process_login', data)
     
-    r = s.get("https://m.tuenti.com/?m=Profile&func=my_profile")
+    r = s.get("https://m.tuenti.com/?m=Profile&func=my_profile", verify=False)
     if r.text.find('email') != -1:
         print '| E-mail o password incorrectos'
         raw_input('| Pulsa ENTER para continuar')
@@ -278,7 +278,7 @@ def backupPrivateMessages(myTuenti, email, password):
         urlName = 'https://m.tuenti.com/?m=messaging&func=view_thread&thread_id='
         urlName += key + '&box=inbox&view_full=1'
         
-        r = s.get(urlName)
+        r = s.get(urlName, verify=False)
 
         parser.setFile(string.zfill(counter, maxFill))
         parser.feed(r.text)
