@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 @author: Borja Menéndez Moreno
 @copyright: Borja Menéndez Moreno (Madrid, Spain)
 @license: GNU GPL version 3 or any later version
-@version: 0.5 beta
+@version: 0.6 beta
 
 Program for the backup of Tuenti, a Spanish social network.
 This program downloads all of the photos, comments, private messages and
@@ -28,13 +28,13 @@ friends' information of a specific user.
 """
 
 import math, os, httplib, requests, string
-import re, getpass, urllib2, hashlib
+import re, getpass, urllib2, hashlib, unicodedata
 from time import sleep
 
 from APtuentI import APtuentI
 from MyHTMLParser import MyHTMLParser
 
-version = '0.5 beta'
+version = '0.6 beta'
 debug = True
 web = 'http://bmenendez.github.io/tuentiUp'
 twitter = '@borjamonserrano'
@@ -51,7 +51,7 @@ def printWelcome():
     print '|'
     print '|           ' + web
     print '|'
-    print '| Tambien puedes seguirme en twitter: ' + twitter
+    print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
     print '-' * 60
     
 def printGoodBye():
@@ -64,11 +64,11 @@ def printGoodBye():
     print '|'
     print '|           ' + web
     print '|'
-    print '| Tambien puedes seguirme en twitter: ' + twitter
+    print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
     print '|'
     print '| Si quieres, puedo mandar un mensaje privado a todos tus'
     print '| contactos para que conozcan la aplicacion:'
-    print '| 1 - Si'
+    print '| 1 - Sí'
     print '| Otro - No'
     print '-' * 60
     
@@ -111,7 +111,7 @@ def printHelp():
     print '|'
     print '|           ' + web
     print '|'
-    print '| Tambien puedes seguirme en twitter: ' + twitter
+    print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
     print '-' * 60
     
 def getData(withError):
@@ -121,22 +121,22 @@ def getData(withError):
         print '| Parece que no has introducido bien tus datos'
         print '| Por favor, escribe de nuevo...'
     else:
-        print '| Para poder hacer el backup necesito'
-        print '| un poco mas de informacion sobre ti...'
+        print '| Para poder hacer el backup necesito un poco mas'
+        print '| de informacion sobre tu cuenta de Tuenti...'
     print
     email = raw_input('E-mail: ')
     while not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-        email = raw_input('El e-mail no es correcto, intenta de nuevo: ')
+        email = raw_input('El e-mail no es valido, intenta de nuevo: ')
     password = getpass.getpass()
     print '-' * 60
     
     return email, password
     
 def backupTotal(myTuenti, email, password):
-    backupPhotos(myTuenti)
     backupPrivateMessages(myTuenti, email, password)
     backupComments(myTuenti)
     backupUsers(myTuenti)
+    backupPhotos(myTuenti)
     
 def backupPhotos(myTuenti):
     printStarting('fotos')
@@ -170,7 +170,7 @@ def backupPhotos(myTuenti):
     
     totalCounter = 0
     for album in dicPhotos:
-        albumName = dicPhotos[album][0]
+        albumName = unicodedata.normalize('NFKD', dicPhotos[album][0])
         albumName = re.sub('[^a-zA-Z0-9\n\.]', '-', albumName)
         size = dicPhotos[album][1]
         
@@ -199,7 +199,7 @@ def backupPhotos(myTuenti):
             mf = myTuenti.getAlbumPhotos(album, i)
             for elem in mf[0]['album']:
                 url = elem['photo_url_600']
-                title = elem['title']
+                title = unicodedata.normalize('NFKD', elem['title'])
                 title = re.sub('[^a-zA-Z0-9\n\.]', '-', title)
                 partialCounter += 1
                 totalCounter += 1
@@ -211,14 +211,15 @@ def backupPhotos(myTuenti):
                     percs = '[' + str(totalPerc) + '% total] ['
                     percs += str(partialPerc) + '% album] '
                     print '| ' + percs + 'Descargando foto ' + title + '...'
-                    with open(fileName, 'wb') as handle:
-                        r = s.get(url)
-                        for block in r.iter_content(1024):
-                            if not block:
-                                break
-                            handle.write(block)
-                        
-                    sleep(0.5)
+                    while not os.path.exists(fileName):
+                        with open(fileName, 'wb') as handle:
+                            r = s.get(url)
+                            for block in r.iter_content(1024):
+                                if not block:
+                                    break
+                                handle.write(block)
+                            
+                        sleep(0.5)
                     
                 myCounter -= 1
 
@@ -230,6 +231,7 @@ def backupPrivateMessages(myTuenti, email, password):
     printStarting('mensajes privados')
     
     print '| Obteniendo identificadores de tus mensajes privados'
+    print '| (esto llevara algun tiempo)'
     messages = myTuenti.getInbox(0)
     totalMessages = int(messages[0]['num_threads'])
     keys = []
@@ -353,7 +355,7 @@ def backupUsers(myTuenti):
     
 def sendPrivateMessageToFriends(myTuenti):
     print '|'
-    print '| Gracias por valorar la aplicación y darme a conocer :)'
+    print '| Gracias por valorar la aplicacion y darme a conocer :)'
     print '|'
     
     text = 'Hola,\r\n'
@@ -373,9 +375,9 @@ def sendPrivateMessageToFriends(myTuenti):
 def main():
     email, password = getData(False)
     myTuenti = APtuentI()
-    login = myTuenti.doLogin()
     while True:
         try:
+            login = myTuenti.doLogin()
             passcode = hashlib.md5(login[0]['challenge'] + \
                             hashlib.md5(password).hexdigest()).hexdigest()
             out = myTuenti.getSession(login[0]['timestamp'], \
@@ -386,7 +388,8 @@ def main():
             email, password = getData(True)
     
     if not debug:        
-        text = 'Utilizando tuentiUp para descargarme todas mis fotos :) ' + web
+        text = 'Utilizando tuentiUp para descargarme todas '
+        text += 'mis fotos de Tuenti :) ' + web
         myTuenti.setUserStatus(text)
             
     respuesta = '0'
@@ -440,3 +443,4 @@ if __name__ == '__main__':
             print '|'
             print '| Ha ocurrido un error inesperado:', e
             print '|'
+            raw_input('| Pulsa ENTER para continuar')
