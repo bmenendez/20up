@@ -68,7 +68,7 @@ def printGoodBye():
     print '|'
     print '| Si quieres, puedo mandar un mensaje privado a todos tus'
     print '| contactos para que conozcan la aplicacion:'
-    print '| 1 - Sí'
+    print '| 1 - Si'
     print '| Otro - No'
     print '-' * 60
     
