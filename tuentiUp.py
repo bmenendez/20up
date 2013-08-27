@@ -295,34 +295,37 @@ def backupComments(myTuenti):
     while True:
         mes = myTuenti.getWall(i)
         counter = 0
-        for post in mes[0]['posts']:
-            totalCount += 1
-            print '| Descargando comentario ' + str(totalCount) + '...'
-            text = '*' * 60
-            text += '\r\n'
-            counter += 1
-            for anElem in post['body']:
-                text += post['author']['name'] + ' '
-                text += post['author']['surname'] + ': '
-                text += anElem['plain']
+        try:
+            for post in mes[0]['posts']:
+                totalCount += 1
+                print '| Descargando comentario ' + str(totalCount) + '...'
+                text = '*' * 60
                 text += '\r\n'
-            try:
-                if post['parent']['body']:
-                    text += '-' * 20
-                    text += '\r\n'
-                for elem in post['parent']['body']:
-                    text += elem['plain']
-                    text += '\r\n'
                 counter += 1
-            except:
-                pass
-                
-            fileToWrite.write(text.encode('utf-8'))
-        
-        if counter == 0:
-            break;
-                
-        i += 1
+                for anElem in post['body']:
+                    text += post['author']['name'] + ' '
+                    text += post['author']['surname'] + ': '
+                    text += anElem['plain']
+                    text += '\r\n'
+                try:
+                    if post['parent']['body']:
+                        text += '-' * 20
+                        text += '\r\n'
+                    for elem in post['parent']['body']:
+                        text += elem['plain']
+                        text += '\r\n'
+                    counter += 1
+                except:
+                    pass
+                    
+                fileToWrite.write(text.encode('utf-8'))
+            
+            if counter == 0:
+                break;
+                    
+            i += 1
+        except:
+            break
     
     fileToWrite.close()
     
