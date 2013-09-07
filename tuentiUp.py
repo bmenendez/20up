@@ -31,14 +31,15 @@ from time import sleep
 from APtuentI import APtuentI
 from MyHTMLParser import MyHTMLParser
 
-version = '0.7 beta'
+version = '0.7.2 beta'
 debug = True
 web = 'http://bmenendez.github.io/tuentiUp'
 twitter = '@borjamonserrano'
+email = 'tuentiup@gmail.com'
 appkey = 'MDI3MDFmZjU4MGExNWM0YmEyYjA5MzRkODlmMjg0MTU6MC4xMzk0ODYwMCAxMjYxMDYwNjk2'
 
 def printWelcome():
-    os.system('cls' if os.name=='nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
     print '-' * 60
     print '| TuentiUp version ' + version
     print '|'
@@ -49,19 +50,21 @@ def printWelcome():
     print '|           ' + web
     print '|'
     print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
+    print '| Asi como por e-mail a traves de: ' + email
     print '-' * 60
     
 def printGoodBye():
     os.system('cls' if os.name == 'nt' else 'clear')
     print '-' * 60
     print '| TuentiUp version ' + version
-    print '| Gracias por haber utilizado TuentUp ' + version
+    print '| Gracias por haber utilizado TuentiUp ' + version
     print '| Espero que te haya sido de gran utilidad :)'
     print '| Si tienes alguna duda, tienes toda la info en:'
     print '|'
     print '|           ' + web
     print '|'
     print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
+    print '| Asi como por e-mail a traves de: ' + email
     print '|'
     print '| Si quieres, puedo mandar un mensaje privado a todos tus'
     print '| contactos para que conozcan la aplicacion:'
@@ -85,11 +88,20 @@ def printMenu():
     print '-' * 60
     
 def printStarting(text):
-    os.system('cls' if os.name=='nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
     print '-' * 60
     print '| TuentiUp version ' + version
     print '|'
     print '| Comenzando el backup de ' + text + '...'
+    print '-' * 60
+    
+def printEnding(text):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print '-' * 60
+    print '| TuentiUp version ' + version
+    print '|'
+    print '| Terminado el backup de ' + text + '...'
+    raw_input('| Pulsa ENTER para continuar')
     print '-' * 60
     
 def printHelp():
@@ -104,11 +116,14 @@ def printHelp():
     print '| cuenta de usuario de Tuenti, de forma que tendras todas tus'
     print '| fotos, mensajes privados, comentarios de tablon y datos de tus'
     print '| contactos en tu ordenador.'
+    print '| TuentiUp no almacena ni envia tu correo o contrasenya a terceras'
+    print '| personas o cuentas de Tuenti.'
     print '| Por favor, si tienes alguna duda, visita la web:'
     print '|'
     print '|           ' + web
     print '|'
     print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
+    print '| Asi como por e-mail a traves de: ' + email
     print '-' * 60
     
 def getData(withError):
@@ -120,6 +135,10 @@ def getData(withError):
     else:
         print '| Para poder hacer el backup necesito un poco mas'
         print '| de informacion sobre tu cuenta de Tuenti...'
+        print '|'
+        print '| Esta informacion no se almacenara en ningun sitio'
+        print '| ni se enviara a ningun lado, solamente se requiere'
+        print '| para la conexion con tu cuenta de Tuenti :)'
     print
     email = raw_input('E-mail: ')
     while not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -224,6 +243,8 @@ def backupPhotos(myTuenti):
         
     os.chdir(rootPath)
     
+    printEnding('fotos')
+    
 def backupPrivateMessages(myTuenti, email, password):
     printStarting('mensajes privados')
     
@@ -282,6 +303,8 @@ def backupPrivateMessages(myTuenti, email, password):
         
     os.chdir(rootPath)
     
+    printEnding('mensajes privados')
+    
 def backupComments(myTuenti):
     printStarting('comentarios')
     
@@ -326,6 +349,8 @@ def backupComments(myTuenti):
     
     fileToWrite.close()
     
+    printEnding('comentarios')
+    
 def backupUsers(myTuenti):
     printStarting('usuarios')
     
@@ -352,6 +377,8 @@ def backupUsers(myTuenti):
         
     fileToWrite.write(text.encode('utf-8'))
     fileToWrite.close()
+    
+    printEnding('usuarios')
     
 def sendPrivateMessageToFriends(myTuenti):
     print '|'
