@@ -31,8 +31,8 @@ from time import sleep
 from APtuentI import APtuentI
 from MyHTMLParser import MyHTMLParser
 
-version = '0.7.2 beta'
-debug = True
+version = '0.7.5'
+debug = False
 web = 'http://bmenendez.github.io/tuentiUp'
 twitter = '@borjamonserrano'
 email = 'tuentiup@gmail.com'
@@ -187,6 +187,7 @@ def backupPhotos(myTuenti):
     totalCounter = 0
     for album in dicPhotos:
         albumName = unicodedata.normalize('NFKD', dicPhotos[album][0].encode('utf-8'))
+        albumName = unicodedata.normalize('NFKD', dicPhotos[album][0])
         albumName = re.sub('[^a-zA-Z0-9\n\.]', '-', albumName)
         size = dicPhotos[album][1]
         
