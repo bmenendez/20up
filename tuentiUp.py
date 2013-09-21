@@ -186,7 +186,9 @@ def backupPhotos(myTuenti):
     
     totalCounter = 0
     for album in dicPhotos:
-        albumName = unicodedata.normalize('NFKD', dicPhotos[album][0].encode('utf-8'))
+        albumName = dicPhotos[album][0].replace('Ñ', 'N')
+        albumName = albumName.replace('ñ', 'n')
+        albumName = unicodedata.normalize('NFKD', albumName)
         albumName = re.sub('[^a-zA-Z0-9\n\.]', '-', albumName)
         size = dicPhotos[album][1]
         
@@ -215,7 +217,9 @@ def backupPhotos(myTuenti):
             mf = myTuenti.getAlbumPhotos(album, i)
             for elem in mf[0]['album']:
                 url = elem['photo_url_600']
-                title = unicodedata.normalize('NFKD', elem['title'])
+                title = elem['title'].replace('Ñ', 'N')
+                title = title.replace('ñ', 'n')
+                title = unicodedata.normalize('NFKD', title)
                 title = re.sub('[^a-zA-Z0-9\n\.]', '-', title)
                 partialCounter += 1
                 totalCounter += 1
