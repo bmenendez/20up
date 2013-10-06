@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 """
 Copyright (C) 2013 Borja Menendez Moreno
@@ -32,7 +32,7 @@ if 'py2exe' in sys.argv:
     import py2exe
     kwargs = {
         'console' : [{
-            'script'         : 'tuentiUp.py',
+            'script'         : '20up.py',
             'description'    : 'Programa para hacer un backup de tu Tuenti.'
             }],
         'zipfile' : None,
@@ -45,7 +45,7 @@ if 'py2exe' in sys.argv:
          }
 
 setup(
-    name='tuentiUp',
+    name='20up',
     author='@borjamonserrano',
     author_email='tuentiup@gmail.com',
     **kwargs)

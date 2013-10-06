@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 
 """
 Copyright (C) 2013 Borja Menendez Moreno
@@ -181,7 +181,8 @@ def backupPhotos(myTuenti):
             
         if counter < 20:
             break
-            
+           
+        sleep(0.5) 
         i += 1
     print '| Nombre de los albumes obtenido'
         
@@ -196,9 +197,7 @@ def backupPhotos(myTuenti):
     
     totalCounter = 0
     for album in dicPhotos:
-        albumName = dicPhotos[album][0].replace('Ñ', 'N')
-        albumName = albumName.replace('ñ', 'n')
-        albumName = unicodedata.normalize('NFKD', albumName)
+        albumName = unicodedata.normalize('NFKD', dicPhotos[album][0])
         albumName = re.sub('[^a-zA-Z0-9\n\.]', '-', albumName)
         size = dicPhotos[album][1]
         
@@ -227,9 +226,7 @@ def backupPhotos(myTuenti):
             mf = myTuenti.getAlbumPhotos(album, i)
             for elem in mf[0]['album']:
                 url = elem['photo_url_600']
-                title = elem['title'].replace('Ñ', 'N')
-                title = title.replace('ñ', 'n')
-                title = unicodedata.normalize('NFKD', title)
+                title = unicodedata.normalize('NFKD', elem['title']) 
                 title = re.sub('[^a-zA-Z0-9\n\.]', '-', title)
                 partialCounter += 1
                 totalCounter += 1
@@ -257,8 +254,6 @@ def backupPhotos(myTuenti):
         
     os.chdir(rootPath)
     
-    printEnding('fotos')
-    
 def backupPrivateMessages(myTuenti, email, password):
     printStarting('mensajes privados')
     
@@ -278,6 +273,8 @@ def backupPrivateMessages(myTuenti, email, password):
         messages = myTuenti.getInbox(i)
         for message in messages[0]['threads']:
             keys.append(message['key'])
+        
+        sleep(0.5)
     
     s = requests.Session()
     r = s.get('https://m.tuenti.com/?m=Login', verify=False)
@@ -311,13 +308,13 @@ def backupPrivateMessages(myTuenti, email, password):
         urlName += key + '&box=inbox&view_full=1'
         
         r = s.get(urlName, verify=False)
+        
+        sleep(0.5)
 
         parser.setFile(string.zfill(counter, maxFill))
         parser.feed(r.text)
         
     os.chdir(rootPath)
-    
-    printEnding('mensajes privados')
     
 def backupComments(myTuenti):
     printStarting('comentarios')
@@ -356,14 +353,13 @@ def backupComments(myTuenti):
             
             if counter == 0:
                 break;
-                    
+            
+            sleep(0.5)    
             i += 1
         except:
             break
     
     fileToWrite.close()
-    
-    printEnding('comentarios')
     
 def backupUsers(myTuenti):
     printStarting('usuarios')
@@ -389,10 +385,10 @@ def backupUsers(myTuenti):
         
         text += '\r\n'
         
+        sleep(0.5)
+        
     fileToWrite.write(text.encode('utf-8'))
     fileToWrite.close()
-    
-    printEnding('usuarios')
     
 def sendPrivateMessageToFriends(myTuenti):
     print '|'
@@ -435,14 +431,19 @@ def main():
         
         if respuesta == '1':
             backupTotal(myTuenti, email, password)
+            printEnding('todo')
         elif respuesta == '2':
             backupPhotos(myTuenti)
+            printEnding('fotos')
         elif respuesta == '3':
             backupPrivateMessages(myTuenti, email, password)
+            printEnding('mensajes privados')
         elif respuesta == '4':
             backupComments(myTuenti)
+            printEnding('comentarios')
         elif respuesta == '5':
             backupUsers(myTuenti)
+            printEnding('usuarios')
         elif respuesta == '6':
             printHelp()
             raw_input('> Presiona ENTER para continuar')
@@ -453,7 +454,7 @@ def main():
             
     printStatus()
     respuesta = raw_input('> ')
-    if respuesta = '1':
+    if respuesta == '1':
         text = 'Utilizando 20p para descargarme todas '
         text += 'mis fotos de Tuenti :) ' + web
         myTuenti.setUserStatus(text)
