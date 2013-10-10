@@ -31,11 +31,14 @@ from time import sleep
 from APtuentI import APtuentI
 from MyHTMLParser import MyHTMLParser
 
-version = '1.0'
+version = '1.0.1'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@borjamonserrano'
 email = 'tuentiup@gmail.com'
 appkey = 'MDI3MDFmZjU4MGExNWM0YmEyYjA5MzRkODlmMjg0MTU6MC4xMzk0ODYwMCAxMjYxMDYwNjk2'
+
+statusText = 'Utilizando 20p para descargarme todas '
+statusText += 'mis fotos de Tuenti :) ' + web
 
 def printWelcome():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -65,19 +68,9 @@ def printGoodBye():
     print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
     print '| Asi como por e-mail a traves de: ' + email
     print '|'
-    print '| Si quieres, puedo mandar un mensaje privado a todos tus'
-    print '| contactos para que conozcan la aplicacion:'
-    print '| 1 - Si'
-    print '| Otro - No'
-    print '-' * 60
-
-def printStatus():
-    os.system('cls' if os.name == 'nt' else 'clear')
-    print '-' * 60
-    print '| 20up version ' + version
-    print '|'
     print '| Si quieres, puedo cambiar tu estado Tuenti para advertir que'
-    print '| has utilizado 20up y que tus contactos conozcan la aplicacion:'
+    print '| has utilizado 20up y que tus contactos conozcan la aplicacion.'
+    print '| El mensaje que se pondra sera: ' + statusText
     print '| 1 - Si'
     print '| Otro - No'
     print '-' * 60
@@ -389,25 +382,6 @@ def backupUsers(myTuenti):
         
     fileToWrite.write(text.encode('utf-8'))
     fileToWrite.close()
-    
-def sendPrivateMessageToFriends(myTuenti):
-    print '|'
-    print '| Gracias por valorar la aplicacion y darme a conocer :)'
-    print '|'
-    
-    text = 'Hola,\r\n'
-    text += 'Acabo de utilizar tuentiUp para descargarme todas mis '
-    text += 'fotos de Tuenti. Si quieres conocerlo:\r\n'
-    text += web + '\r\n'
-    text += 'Un abrazo :)'
-    
-    print '| Obteniendo todos tus contactos'
-    totalFriends = myTuenti.getFriendsData()
-    
-    for friend in totalFriends[0]['friends']:
-        print '| Enviando mensaje privado a ' + friend['name'] + \
-              ' ' + friend['surname'] + '...'
-        myTuenti.sendMessage(friend['id'], text)
 
 def main():
     email, password = getData(False)
@@ -452,17 +426,10 @@ def main():
         else:
             print 'No has elegido una opcion valida'
             
-    printStatus()
-    respuesta = raw_input('> ')
-    if respuesta == '1':
-        text = 'Utilizando 20p para descargarme todas '
-        text += 'mis fotos de Tuenti :) ' + web
-        myTuenti.setUserStatus(text)
-            
     printGoodBye()
     respuesta = raw_input('> ')
     if respuesta == '1':
-        sendPrivateMessageToFriends(myTuenti)
+        myTuenti.setUserStatus(text)
 
 if __name__ == '__main__':
     printWelcome()
