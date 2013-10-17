@@ -429,7 +429,9 @@ def main():
     printGoodBye()
     respuesta = raw_input('> ')
     if respuesta == '1':
-        myTuenti.setUserStatus(text)
+        myTuenti.setUserStatus(statusText)
+        
+    print '| Hasta pronto :)'
 
 if __name__ == '__main__':
     printWelcome()
