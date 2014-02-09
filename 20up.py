@@ -31,7 +31,7 @@ from time import sleep
 from APtuentI import APtuentI
 from MyHTMLParser import MyHTMLParser
 
-version = '1.0.1'
+version = '1.1'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@borjamonserrano'
 email = 'tuentiup@gmail.com'
