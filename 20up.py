@@ -179,7 +179,7 @@ def backupPhotos(myTuenti):
         i += 1
     print '| Nombre de los albumes obtenido'
         
-    rootPath = os.getcwd()
+    rootPath = os.getcwdu()
     theJoinPath = os.path.join(rootPath, 'fotos')
     if not os.path.exists(theJoinPath):
         print '| Creando directorio donde se alojaran las fotos...'
@@ -282,7 +282,7 @@ def backupPrivateMessages(myTuenti, email, password):
         raw_input('| Pulsa ENTER para continuar')
         return
     
-    rootPath = os.getcwd()
+    rootPath = os.getcwdu()
     theJoinPath = os.path.join(rootPath, 'privados')
     if not os.path.exists(theJoinPath):
         print '| Creando directorio donde se alojaran los mensajes privados...'
