@@ -90,6 +90,10 @@
 
 <p>Para usar <b>20up</b>, primero <a href="https://github.com/bmenendez/20up/tarball/master">desc&aacute;rgalo</a> y descompr&iacute;melo en tu ordenador o bien clona con git <a href="https://github.com/bmenendez/20up">el proyecto</a>.</p>
 
+<p>Despu&eacute;s instala pip, el instalador de m&oacute;dulos de python:</p>
+
+<p><code>$ sudo apt-get install python-pip</code></p>
+
 <p><b>20up</b> solo depende de un m&oacute;dulo externo a python: <a href="http://docs.python-requests.org">Requests</a>. Desc&aacute;rgalo con pip:</p>
 
 <p><code>$ sudo pip install requests</code></p>
@@ -105,9 +109,15 @@
 
 <p><b>20up</b> NO ha sido probado en Mac todav&iacute;a. No s&eacute; si python viene instalado por defecto en Mac, pero por si las moscas, pongo aqu&iacute; simplemente enlaces para que puedas ejecutar python en Mac sin problemas y, as&iacute;, conseguir utilizar <b>20up</b>. Nada de lo puesto aqu&iacute; ha sido probado tampoco.</p>
 
-<p>Instala python <a href="http://docs.python.org/2/using/mac.html">en Mac</a>.</p>
+<p>Instala python <a href="http://docs.python.org/2/using/mac.html">en Mac</a> (si no estuviese ya instalado).</p>
 
-<p>Instala <a href="http://pootle.python.org/build/es/install/index.html">Distutils</a>, que servir&aacute; para descargar el m&oacute;dulo Requests. Instala este m&oacute;dulo a continuaci&oacute;n.</p>
+<p>Instala <a href="https://pypi.python.org/pypi/setuptools#unix-including-mac-os-x-curl">setup-tools</a>, que servir&aacute; para descargar el instalador de m&oacute;dulos de python. Una vez seguidas las instrucciones, instala dicho instalador (pip) con:</p>
+
+<p><code>sudo easy_install pip</code></p>
+
+<p>Ahora instala Requests, el m&oacute;dulo del que depende <b>20up</b>:</p>
+
+<p><code>sudo pip install requests</code></p>
 
 <p>Descarga <a href="https://github.com/bmenendez/20up/tarball/master">20up</a> y ejec&uacute;talo a trav&eacute;s de la terminal. Para ello, ejecuta <code>python 20up.py</code> y sigue las instrucciones.</p> 
 
@@ -275,7 +285,6 @@
         <aside id="sidebar">
           <a href="https://twitter.com/share" class="twitter-share-button" data-text="20up, descarga todas tus fotos de Tuenti" data-via="borjamonserrano" data-lang="es" data-size="large" data-hashtags="20up">Twittear</a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script><g:plusone size="tall"></br></g:plusone></br>
-<iframe src="//www.facebook.com/plugins/likebox.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2F20up%2F189617151215822&amp;width=200&amp;height=300&amp;colorscheme=light&amp;show_faces=true&amp;header=false&amp;stream=false&amp;show_border=true&amp;appId=218705961618246" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:200px; height:300px;" allowTransparency="true"></iframe>    
           <a href="https://github.com/bmenendez/20up/raw/master/windows/20up.exe" class="button">
             <small>Descarga</small>
             Windows
