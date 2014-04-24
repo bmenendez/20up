@@ -24,14 +24,14 @@ This program downloads all of the photos, comments, private messages and
 friends' information of a specific user.
 """
 
-import math, os, httplib, requests, string
+import math, os, httplib, requests, string, sys
 import re, getpass, urllib2, hashlib, unicodedata
 from time import sleep
 
 from APtuentI import APtuentI
 from MyHTMLParser import MyHTMLParser
 
-version = '1.1'
+version = '1.2'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@borjamonserrano'
 email = 'tuentiup@gmail.com'
@@ -40,8 +40,10 @@ appkey = 'MDI3MDFmZjU4MGExNWM0YmEyYjA5MzRkODlmMjg0MTU6MC4xMzk0ODYwMCAxMjYxMDYwNj
 statusText = 'Utilizando 20p para descargarme todas '
 statusText += 'mis fotos de Tuenti :) ' + web
 
+WINDOWS = 'nt'
+
 def printWelcome():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| 20up version ' + version
     print '|'
@@ -56,7 +58,7 @@ def printWelcome():
     print '-' * 60
     
 def printGoodBye():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| 20up version ' + version
     print '| Gracias por haber utilizado 20up ' + version
@@ -76,7 +78,7 @@ def printGoodBye():
     print '-' * 60
     
 def printMenu():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| 20up version ' + version
     print '|'
@@ -91,7 +93,7 @@ def printMenu():
     print '-' * 60
     
 def printStarting(text):
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| 20up version ' + version
     print '|'
@@ -99,7 +101,7 @@ def printStarting(text):
     print '-' * 60
     
 def printEnding(text):
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| 20up version ' + version
     print '|'
@@ -108,7 +110,7 @@ def printEnding(text):
     print '-' * 60
     
 def printHelp():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| 20up version ' + version
     print '|'
@@ -128,9 +130,41 @@ def printHelp():
     print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
     print '| Asi como por e-mail a traves de: ' + email
     print '-' * 60
+
+def winGetpass(prompt='Password: ', stream=None):
+    """Prompt for password with echo off, using Windows getch()."""
+    if sys.stdin is not sys.__stdin__:
+        return fallback_getpass(prompt, stream)
+    
+    import msvcrt
+    for c in prompt:
+        msvcrt.putch(c)
+    
+    pw = ""
+    while 1:
+        c = msvcrt.getch()
+        if c == '\r' or c == '\n':
+            break
+        if c == '\003':
+            raise KeyboardInterrupt
+        if c == '\b':
+            if pw == '':
+                pass
+            else:
+                pw = pw[:-1]
+                msvcrt.putch('\b')
+                msvcrt.putch(" ")
+                msvcrt.putch('\b')
+        else:
+            pw = pw + c
+            msvcrt.putch("*")
+    msvcrt.putch('\r')
+    msvcrt.putch('\n')
+    
+    return pw
     
 def getData(withError):
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     if withError:
         print '| Parece que no has introducido bien tus datos'
@@ -146,7 +180,10 @@ def getData(withError):
     email = raw_input('E-mail: ')
     while not re.match(r'[^@]+@[^@]+\.[^@]+', email):
         email = raw_input('El e-mail no es valido, intenta de nuevo: ')
-    password = getpass.getpass()
+    if os.name == WINDOWS:
+        password = winGetpass()
+    else:
+        password = getpass.getpass()
     print '-' * 60
     
     return email, password
