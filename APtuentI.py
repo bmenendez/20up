@@ -123,3 +123,9 @@ class APtuentI:
                 'requests':[['addPostToProfileWall',{'user_id':userid, \
                 'body':message, 'legacy':'false'}]]}
         return self.getResponse(data)
+        
+    def getCommentsPhoto(self, pid, page):
+        data = {'session_id':self.sid, 'version':self.apiversion, \
+                'requests':[['getPhotoWall',{'photo_id':pid, \
+                'page':page, 'posts_per_page':20}]]}
+        return self.getResponse(data)

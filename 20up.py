@@ -31,13 +31,13 @@ from time import sleep
 from APtuentI import APtuentI
 from MyHTMLParser import MyHTMLParser
 
-version = '1.2'
+version = '1.3'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@borjamonserrano'
 email = 'tuentiup@gmail.com'
 appkey = 'MDI3MDFmZjU4MGExNWM0YmEyYjA5MzRkODlmMjg0MTU6MC4xMzk0ODYwMCAxMjYxMDYwNjk2'
 
-statusText = 'Utilizando 20p para descargarme todas '
+statusText = 'Utilizando 20up para descargarme todas '
 statusText += 'mis fotos de Tuenti :) ' + web
 
 WINDOWS = 'nt'
@@ -73,6 +73,16 @@ def printGoodBye():
     print '| Si quieres, puedo cambiar tu estado Tuenti para advertir que'
     print '| has utilizado 20up y que tus contactos conozcan la aplicacion.'
     print '| El mensaje que se pondra sera: ' + statusText
+    print '| 1 - Si'
+    print '| Otro - No'
+    print '-' * 60
+    
+def printDownloadPhotoComments():
+    os.system('cls' if os.name == WINDOWS else 'clear')
+    print '-' * 60
+    print '| 20up version ' + version
+    print '|'
+    print '| Quieres descargar tambien los comentarios de las fotos?'
     print '| 1 - Si'
     print '| Otro - No'
     print '-' * 60
@@ -188,13 +198,49 @@ def getData(withError):
     
     return email, password
     
-def backupTotal(myTuenti, email, password):
+def backupTotal(myTuenti, email, password, downComments):
     backupPrivateMessages(myTuenti, email, password)
     backupComments(myTuenti)
     backupUsers(myTuenti)
-    backupPhotos(myTuenti)
+    backupPhotos(myTuenti, downComments)
     
-def backupPhotos(myTuenti):
+def downloadPhotoComments(myTuenti, pid, path):    
+    hasMore = True
+    i = 0
+    opened = False
+    
+    while hasMore:
+        c = myTuenti.getCommentsPhoto(pid, i)
+        hasMore = (c[0]['has_more'] == True)
+        i += 1
+        
+        if c[0]['posts'] != [] and not opened:
+            opened = True
+            fileToWrite = open(path, 'w')
+        
+        for post in c[0]['posts']:
+            fileToWrite.write('******************\r\n')
+            userSays = post['author']['name'] + ' ' + \
+                        post['author']['surname'] + ' dice:\r\n'
+            fileToWrite.write(userSays.encode('utf-8'))
+            fileToWrite.write('------------------\r\n')
+            for tpost in post['body']:
+                try:
+                    if tpost['type'] == 'String':
+                        fileToWrite.write(tpost['plain'].encode('utf-8') + '\r\n')
+                    elif tpost['type'] == 'ExternalURL':
+                        fileToWrite.write(tpost['url'].encode('utf-8') + '\r\n')
+                    elif tpost['type'] == 'InternalPhoto':
+                        fileToWrite.write(tpost['urls']['m'].encode('utf-8') + '\r\n')
+                    elif tpost['type'] == 'Video':
+                        fileToWrite.write(tpost['plain'].encode('utf-8') + '\r\n')
+                except:
+                    pass
+
+    if opened:
+        fileToWrite.close()
+    
+def backupPhotos(myTuenti, downComments):
     printStarting('fotos')
     
     print '| Obteniendo los nombres de tus albumes...'
@@ -277,6 +323,11 @@ def backupPhotos(myTuenti):
                                 handle.write(block)
                             
                         sleep(0.5)
+                
+                commentsFileName = string.zfill(myCounter, maxFill) + '_' + \
+                                    title + '.txt'
+                if not os.path.exists(commentsFileName) and downComments == '1':
+                    downloadPhotoComments(myTuenti, elem['id'], commentsFileName)
                     
                 myCounter -= 1
 
@@ -441,10 +492,14 @@ def main():
         respuesta = raw_input('> ')
         
         if respuesta == '1':
-            backupTotal(myTuenti, email, password)
+            printDownloadPhotoComments()
+            r = raw_input('> ')
+            backupTotal(myTuenti, email, password, r)
             printEnding('todo')
         elif respuesta == '2':
-            backupPhotos(myTuenti)
+            printDownloadPhotoComments()
+            r = raw_input('> ')
+            backupPhotos(myTuenti, r)
             printEnding('fotos')
         elif respuesta == '3':
             backupPrivateMessages(myTuenti, email, password)
