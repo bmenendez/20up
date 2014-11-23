@@ -24,21 +24,18 @@ This program downloads all of the photos, comments, private messages and
 friends' information of a specific user.
 """
 
-import math, os, httplib, requests, string, sys
-import re, getpass, urllib2, hashlib, unicodedata
+import os, requests, re, getpass, sys
+import httplib, urllib2
 from time import sleep
 
-from APtuentI import APtuentI
-from MyHTMLParser import MyHTMLParser
+PATH = os.getcwdu()
+BASEURI = "https://m.tuenti.com/"
+dirs = ['tagged', 'uploaded']
 
-version = '1.3'
+version = '2.0'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@borjamonserrano'
 email = 'tuentiup@gmail.com'
-appkey = 'MDI3MDFmZjU4MGExNWM0YmEyYjA5MzRkODlmMjg0MTU6MC4xMzk0ODYwMCAxMjYxMDYwNjk2'
-
-statusText = 'Utilizando 20up para descargarme todas '
-statusText += 'mis fotos de Tuenti :) ' + web
 
 WINDOWS = 'nt'
 
@@ -77,31 +74,6 @@ def printGoodBye():
     print '| Otro - No'
     print '-' * 60
     
-def printDownloadPhotoComments():
-    os.system('cls' if os.name == WINDOWS else 'clear')
-    print '-' * 60
-    print '| 20up version ' + version
-    print '|'
-    print '| Quieres descargar tambien los comentarios de las fotos?'
-    print '| 1 - Si'
-    print '| Otro - No'
-    print '-' * 60
-    
-def printMenu():
-    os.system('cls' if os.name == WINDOWS else 'clear')
-    print '-' * 60
-    print '| 20up version ' + version
-    print '|'
-    print '| Pulsa un numero en funcion de lo que quieras hacer:'
-    print '| 1 - Backup total (fotos, privados, comentarios y usuarios)'
-    print '| 2 - Backup de fotos'
-    print '| 3 - Backup de privados'
-    print '| 4 - Backup de comentarios'
-    print '| 5 - Backup de usuarios'
-    print '| 6 - Ayuda'
-    print '| 7 - Salir'
-    print '-' * 60
-    
 def printStarting(text):
     os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
@@ -117,28 +89,6 @@ def printEnding(text):
     print '|'
     print '| Terminado el backup de ' + text + '...'
     raw_input('| Pulsa ENTER para continuar')
-    print '-' * 60
-    
-def printHelp():
-    os.system('cls' if os.name == WINDOWS else 'clear')
-    print '-' * 60
-    print '| 20up version ' + version
-    print '|'
-    print '| 20up es una aplicacion para hacer un backup de tu Tuenti.'
-    print '| 20up no se responsabiliza de los usos derivados que se le'
-    print '| puedan dar a esta aplicacion.'
-    print '| 20up tiene como proposito poder realizar un backup de tu'
-    print '| cuenta de usuario de Tuenti, de forma que tendras todas tus'
-    print '| fotos, mensajes privados, comentarios de tablon y datos de tus'
-    print '| contactos en tu ordenador.'
-    print '| 20up no almacena ni envia tu correo o contrasenya a terceras'
-    print '| personas o cuentas de Tuenti.'
-    print '| Por favor, si tienes alguna duda, visita la web:'
-    print '|'
-    print '|           ' + web
-    print '|'
-    print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
-    print '| Asi como por e-mail a traves de: ' + email
     print '-' * 60
 
 def winGetpass(prompt='Password: ', stream=None):
@@ -173,19 +123,15 @@ def winGetpass(prompt='Password: ', stream=None):
     
     return pw
     
-def getData(withError):
+def getData():
     os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
-    if withError:
-        print '| Parece que no has introducido bien tus datos'
-        print '| Por favor, escribe de nuevo...'
-    else:
-        print '| Para poder hacer el backup necesito un poco mas'
-        print '| de informacion sobre tu cuenta de Tuenti...'
-        print '|'
-        print '| Esta informacion no se almacenara en ningun sitio'
-        print '| ni se enviara a ningun lado, solamente se requiere'
-        print '| para la conexion con tu cuenta de Tuenti :)'
+    print '| Para poder hacer el backup necesito un poco mas'
+    print '| de informacion sobre tu cuenta de Tuenti...'
+    print '|'
+    print '| Esta informacion no se almacenara en ningun sitio'
+    print '| ni se enviara a ningun lado, solamente se requiere'
+    print '| para la conexion con tu cuenta de Tuenti :)'
     print
     email = raw_input('E-mail: ')
     while not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -196,332 +142,94 @@ def getData(withError):
         password = getpass.getpass()
     print '-' * 60
     
-    return email, password
+    return email, password 
     
-def backupTotal(myTuenti, email, password, downComments):
-    backupPrivateMessages(myTuenti, email, password)
-    backupComments(myTuenti)
-    backupUsers(myTuenti)
-    backupPhotos(myTuenti, downComments)
-    
-def downloadPhotoComments(myTuenti, pid, path):    
-    hasMore = True
-    i = 0
-    opened = False
-    
-    while hasMore:
-        c = myTuenti.getCommentsPhoto(pid, i)
-        hasMore = (c[0]['has_more'] == True)
-        i += 1
-        
-        if c[0]['posts'] != [] and not opened:
-            opened = True
-            fileToWrite = open(path, 'w')
-        
-        for post in c[0]['posts']:
-            fileToWrite.write('******************\r\n')
-            userSays = post['author']['name'] + ' ' + \
-                        post['author']['surname'] + ' dice:\r\n'
-            fileToWrite.write(userSays.encode('utf-8'))
-            fileToWrite.write('------------------\r\n')
-            for tpost in post['body']:
-                try:
-                    if tpost['type'] == 'String':
-                        fileToWrite.write(tpost['plain'].encode('utf-8') + '\r\n')
-                    elif tpost['type'] == 'ExternalURL':
-                        fileToWrite.write(tpost['url'].encode('utf-8') + '\r\n')
-                    elif tpost['type'] == 'InternalPhoto':
-                        fileToWrite.write(tpost['urls']['m'].encode('utf-8') + '\r\n')
-                    elif tpost['type'] == 'Video':
-                        fileToWrite.write(tpost['plain'].encode('utf-8') + '\r\n')
-                except:
-                    pass
-
-    if opened:
-        fileToWrite.close()
-    
-def backupPhotos(myTuenti, downComments):
+def backupPhotos(email, password):
     printStarting('fotos')
     
-    print '| Obteniendo los nombres de tus albumes...'
-    dicPhotos = {}
-    i = 0
-    totalPhotos = 0
-    while True:
-        albums = myTuenti.getUserAlbums(i)
-        counter = 0
-        for album in albums[0]:
-            counter += 1
-            dicPhotos[album] = [albums[0][album]['name'], albums[0][album]['size']]
-            totalPhotos += int(albums[0][album]['size'])
-            
-        if counter < 20:
-            break
-           
-        sleep(0.5) 
-        i += 1
-    print '| Nombre de los albumes obtenido'
-        
-    rootPath = os.getcwdu()
-    theJoinPath = os.path.join(rootPath, 'fotos')
-    if not os.path.exists(theJoinPath):
-        print '| Creando directorio donde se alojaran las fotos...'
-        os.makedirs(theJoinPath)
-        print '| Directorio creado'
-    
     s = requests.Session()
-    
-    totalCounter = 0
-    for album in dicPhotos:
-        albumName = unicodedata.normalize('NFKD', dicPhotos[album][0])
-        albumName = re.sub('[^a-zA-Z0-9\n\.]', '-', albumName)
-        size = dicPhotos[album][1]
-        
-        albumPath = os.path.join(theJoinPath, albumName)
-        if not os.path.exists(albumPath):
-            print '| Creando directorio donde se alojaran las fotos'
-            print '| del album ' + albumName + '...'
-            os.makedirs(albumPath)
-            print '| Directorio creado'
-        os.chdir(albumPath)
-        
-        myCounter = int(size)
-        maxFill = len(str(size))
-        iters = myCounter / 20.0
-        if math.fmod(iters, 1) != 0.0:
-            iters += 1
-        iters = int(iters)
-        totalPhotosAlbum = myCounter
-        
-        print '|'
-        print '| Descargando fotos del album ' + albumName + '...'
-        print '|'
-        
-        partialCounter = 0
-        for i in range(0, iters):
-            mf = myTuenti.getAlbumPhotos(album, i)
-            for elem in mf[0]['album']:
-                url = elem['photo_url_600']
-                title = unicodedata.normalize('NFKD', elem['title']) 
-                title = re.sub('[^a-zA-Z0-9\n\.]', '-', title)
-                partialCounter += 1
-                totalCounter += 1
-                
-                fileName = string.zfill(myCounter, maxFill) + '_' + title + '.jpg'
-                if not os.path.exists(fileName):
-                    partialPerc = 100 * partialCounter / totalPhotosAlbum
-                    totalPerc = 100 * totalCounter / totalPhotos
-                    percs = '[' + str(totalPerc) + '% total] ['
-                    percs += str(partialPerc) + '% album] '
-                    print '| ' + percs + 'Descargando foto ' + title + '...'
-                    while not os.path.exists(fileName):
-                        with open(fileName, 'wb') as handle:
-                            r = s.get(url, verify=False)
-                            for block in r.iter_content(1024):
-                                if not block:
-                                    break
-                                handle.write(block)
-                            
-                        sleep(0.5)
-                
-                commentsFileName = string.zfill(myCounter, maxFill) + '_' + \
-                                    title + '.txt'
-                if not os.path.exists(commentsFileName) and downComments == '1':
-                    downloadPhotoComments(myTuenti, elem['id'], commentsFileName)
-                    
-                myCounter -= 1
 
-        os.chdir(theJoinPath)
-        
-    os.chdir(rootPath)
-    
-def backupPrivateMessages(myTuenti, email, password):
-    printStarting('mensajes privados')
-    
-    print '| Obteniendo identificadores de tus mensajes privados'
-    print '| (esto llevara algun tiempo)'
-    messages = myTuenti.getInbox(0)
-    totalMessages = int(messages[0]['num_threads'])
-    keys = []
-    
-    maxFill = len(str(totalMessages))
-    iters = totalMessages / 10.0
-    if math.fmod(iters, 1) != 0.0:
-        iters += 1
-    iters = int(iters)
-    
-    for i in range(0, iters):
-        messages = myTuenti.getInbox(i)
-        for message in messages[0]['threads']:
-            keys.append(message['key'])
-        
-        sleep(0.5)
-    
-    s = requests.Session()
-    r = s.get('https://m.tuenti.com/?m=Login', verify=False)
+    r = s.get(BASEURI + "?m=Login", verify=False)
     csrf = re.findall('name="csrf" value="(.*?)"', r.text)[0]
+    data = {
+        "csrf": csrf,
+        "tuentiemailaddress": email,
+        "password": password,
+        "remember": 1}
+    r = s.post(BASEURI + "?m=Login&f=process_login", data)
 
-    data = { 'csrf': csrf, 'tuentiemailaddress': email, 'password': password, 'remember': 1 }
-    s.post('https://m.tuenti.com/?m=Login&f=process_login', data)
-    
-    r = s.get("https://m.tuenti.com/?m=Profile&func=my_profile", verify=False)
-    if r.text.find('email') != -1:
-        print '| E-mail o password incorrectos'
-        raw_input('| Pulsa ENTER para continuar')
-        return
-    
-    rootPath = os.getcwdu()
-    theJoinPath = os.path.join(rootPath, 'privados')
-    if not os.path.exists(theJoinPath):
-        print '| Creando directorio donde se alojaran los mensajes privados...'
-        os.makedirs(theJoinPath)
-        print '| Directorio creado'
-    os.chdir(theJoinPath)
-    
-    counter = 0
-    parser = MyHTMLParser()
-    for key in keys:
-        counter += 1
-        percent = 100 * counter / totalMessages
-        print '| [' + str(percent) + '%] Descargando mensaje ' + \
-              str(counter) + ' de ' + str(totalMessages) + '...'
-        urlName = 'https://m.tuenti.com/?m=messaging&func=view_thread&thread_id='
-        urlName += key + '&box=inbox&view_full=1'
-        
-        r = s.get(urlName, verify=False)
-        
-        sleep(0.5)
+    if 'tuentiemail' in r.cookies:
+        return False
 
-        parser.setFile(string.zfill(counter, maxFill))
-        parser.feed(r.text)
-        
-    os.chdir(rootPath)
-    
-def backupComments(myTuenti):
-    printStarting('comentarios')
-    
-    i = 0
-    counter = 0
-    totalCount = 0
-    fileToWrite = open('comentarios.txt', 'w')
-    while True:
-        mes = myTuenti.getWall(i)
-        counter = 0
-        try:
-            for post in mes[0]['posts']:
-                totalCount += 1
-                print '| Descargando comentario ' + str(totalCount) + '...'
-                text = '*' * 60
-                text += '\r\n'
-                counter += 1
-                for anElem in post['body']:
-                    text += post['author']['name'] + ' '
-                    text += post['author']['surname'] + ': '
-                    text += anElem['plain']
-                    text += '\r\n'
-                try:
-                    if post['parent']['body']:
-                        text += '-' * 20
-                        text += '\r\n'
-                    for elem in post['parent']['body']:
-                        text += elem['plain']
-                        text += '\r\n'
-                    counter += 1
-                except:
-                    pass
-                    
-                fileToWrite.write(text.encode('utf-8'))
+    for i in range(1, 3):
+        r = s.get(BASEURI + "?m=Profile&func=my_profile", verify=False)
+        print '| Descargando fotos ' + dirs[i - 1] + '...'
+        album = BASEURI + "?m=Albums&func=index&collection_key=%i-" % i + \
+            re.findall('key=%i-(.*?)&' % i, r.text)[0]
+
+        r = s.get(album, verify=False)
+        firstPic = BASEURI + "?m=Photos&func=view_album_photo&collection_key=%i-" % i + \
+            re.findall('key=%i-(.*?)&' % i, r.text)[0]
+
+        r = s.get(firstPic, verify=False)
+        picQuantity = int(
+            re.findall('[of|de|\/|sur|di|van|z]\s(\d+)\)', r.text)[0])
             
-            if counter == 0:
-                break;
+        photoDownloadUrl = re.findall('img\ssrc="(.*?)"', r.text)[0]
+        if picQuantity > 1:
+            nextPhotoUrl = re.findall(
+                '\)\s\<a href="(.*?)"',
+                r.text)[0].replace("&amp;",
+                                   "&")  # not loading a whole lib for one single entity
+        else:
+            nextPhotoUrl = None
+
+        for x in range(1, picQuantity + 1):
+            if x != 1:
+                r = s.get(
+                    nextPhotoUrl,
+                    cookies={"screen": "1920-1080-1920-1040-1-20.74"}, verify=False)
+                photoDownloadUrl = re.findall('img\ssrc="(.*?)"', r.text)[0]
+                if x != picQuantity:
+                    nextPhotoUrl = re.findall(
+                        '\)\s\<a href="(.*?)"',
+                        r.text)[0].replace("&amp;", "&")
+                        
+            albumPath = os.path.join(PATH, dirs[i - 1])
             
-            sleep(0.5)    
-            i += 1
-        except:
-            break
-    
-    fileToWrite.close()
-    
-def backupUsers(myTuenti):
-    printStarting('usuarios')
-    
-    print '| Obteniendo todos tus contactos'
-    totalFriends = myTuenti.getFriendsData()
-    
-    fileToWrite = open('usuarios.txt', 'w')
-    text = ''
-    
-    for friend in totalFriends[0]['friends']:
-        name = friend['name']
-        surname = friend['surname']
-        text += name + ' ' + surname
-        print '| Obteniendo datos de ' + name + ' ' + surname + '...'
-        friendId = friend['id']
-        
-        data = myTuenti.getUsersData(friendId)
-        if data[0]['users'][0]['birthday']:
-            text += ' (' + data[0]['users'][0]['birthday'] + ')'
-        if data[0]['users'][0]['phone_number']:
-            text += ': ' + data[0]['users'][0]['phone_number']
-        
-        text += '\r\n'
-        
-        sleep(0.5)
-        
-    fileToWrite.write(text.encode('utf-8'))
-    fileToWrite.close()
+            if not os.path.exists(albumPath):
+                os.makedirs(albumPath)
+                print "| Creado el directorio %s" % dirs[i - 1]
+            
+            filename = os.path.join(albumPath, str(x) + '.jpg')
+            if not os.path.exists(filename):
+                with open(filename, "wb") as handle:
+                    r = s.get(photoDownloadUrl, verify=False)
+
+                    for block in r.iter_content(1024):
+                        if not block:
+                            break
+
+                        handle.write(block)
+
+                percent = (x * 100) / picQuantity
+                print '| %s.jpg descargada (%i%%)... (album %i/2)' % (x, percent, i)
+                sleep(0.5)  # avoid flooding
+
+        return True
 
 def main():
-    email, password = getData(False)
-    myTuenti = APtuentI()
-    while True:
-        try:
-            login = myTuenti.doLogin()
-            passcode = hashlib.md5(login[0]['challenge'] + \
-                            hashlib.md5(password).hexdigest()).hexdigest()
-            out = myTuenti.getSession(login[0]['timestamp'], \
-                                login[0]['seed'], passcode, appkey, email)
-            myTuenti.setSessionID(out[0]['session_id'])
-            break
-        except:
-            email, password = getData(True)
-            
-    respuesta = '0'
-    while respuesta != '7':
-        printMenu()
-        respuesta = raw_input('> ')
-        
-        if respuesta == '1':
-            printDownloadPhotoComments()
-            r = raw_input('> ')
-            backupTotal(myTuenti, email, password, r)
-            printEnding('todo')
-        elif respuesta == '2':
-            printDownloadPhotoComments()
-            r = raw_input('> ')
-            backupPhotos(myTuenti, r)
-            printEnding('fotos')
-        elif respuesta == '3':
-            backupPrivateMessages(myTuenti, email, password)
-            printEnding('mensajes privados')
-        elif respuesta == '4':
-            backupComments(myTuenti)
-            printEnding('comentarios')
-        elif respuesta == '5':
-            backupUsers(myTuenti)
-            printEnding('usuarios')
-        elif respuesta == '6':
-            printHelp()
-            raw_input('> Presiona ENTER para continuar')
-        elif respuesta == '7':
-            pass
-        else:
-            print 'No has elegido una opcion valida'
-            
+    done = False
+    while not done:
+        email, password = getData()
+        done = backupPhotos(email, password)
+        if not done:
+            print
+            print '| Ha habido algun error'
+            print '| Es posible que el usuario y/o la password sean incorrectos'
+            raw_input('| Pulsa ENTER para continuar')
+    
     printGoodBye()
-    respuesta = raw_input('> ')
-    if respuesta == '1':
-        myTuenti.setUserStatus(statusText)
         
     print '| Hasta pronto :)'
 
@@ -531,17 +239,14 @@ if __name__ == '__main__':
     while True:
         try:
             main()
-            break
-        except urllib2.URLError:
-            print '|'
-            print '| No hay conexion a internet'
-            print '|'
+            raw_input()
             break
         except KeyboardInterrupt:
             print
             print '|'
             print '| Cerrando aplicacion...'
             print '|'
+            raw_input()
             break
         except Exception, e:
             print '|'
