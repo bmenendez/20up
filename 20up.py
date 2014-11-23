@@ -66,12 +66,6 @@ def printGoodBye():
     print '|'
     print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
     print '| Asi como por e-mail a traves de: ' + email
-    print '|'
-    print '| Si quieres, puedo cambiar tu estado Tuenti para advertir que'
-    print '| has utilizado 20up y que tus contactos conozcan la aplicacion.'
-    print '| El mensaje que se pondra sera: ' + statusText
-    print '| 1 - Si'
-    print '| Otro - No'
     print '-' * 60
     
 def printStarting(text):
@@ -80,15 +74,6 @@ def printStarting(text):
     print '| 20up version ' + version
     print '|'
     print '| Comenzando el backup de ' + text + '...'
-    print '-' * 60
-    
-def printEnding(text):
-    os.system('cls' if os.name == WINDOWS else 'clear')
-    print '-' * 60
-    print '| 20up version ' + version
-    print '|'
-    print '| Terminado el backup de ' + text + '...'
-    raw_input('| Pulsa ENTER para continuar')
     print '-' * 60
 
 def winGetpass(prompt='Password: ', stream=None):
