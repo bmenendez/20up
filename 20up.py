@@ -201,7 +201,7 @@ def backupPhotos(email, password):
                 print '| %s.jpg descargada (%i%%)... (album %i/2)' % (x, percent, i)
                 sleep(0.5)  # avoid flooding
 
-        return True
+    return True
 
 def main():
     done = False
