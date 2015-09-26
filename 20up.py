@@ -20,21 +20,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 Authors: Borja Menéndez Moreno <tuentiup@gmail.com>
 
 Program for the backup of Tuenti, a Spanish social network.
-This program downloads all of the photos, comments, private messages and
-friends' information of a specific user.
+This program downloads all of the photos, comments, and
+friends' information of an specific user.
 """
 
-import os, requests, re, getpass, sys
-import httplib, urllib2
-from time import sleep
+import os, sys, getpass
+from tntwrapper import *
 
-PATH = os.getcwdu()
-BASEURI = "https://m.tuenti.com/"
-dirs = ['tagged', 'uploaded']
-
-version = '2.0'
+version = '3.0'
 web = 'http://bmenendez.github.io/20up'
-twitter = '@borjamonserrano'
+twitter = '@bmenendez_'
 email = 'tuentiup@gmail.com'
 
 WINDOWS = 'nt'
@@ -43,6 +38,8 @@ def printWelcome():
     os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| 20up version ' + version
+    print '|'
+    print '| 20up es software libre, liberado bajo licencia GPLv3'
     print '|'
     print '| Gracias por descargar esta aplicacion'
     print '| Espero que te sea de gran utilidad :)'
@@ -53,11 +50,12 @@ def printWelcome():
     print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
     print '| Asi como por e-mail a traves de: ' + email
     print '-' * 60
-    
+
 def printGoodBye():
     os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| 20up version ' + version
+    print '|'
     print '| Gracias por haber utilizado 20up ' + version
     print '| Espero que te haya sido de gran utilidad :)'
     print '| Si tienes alguna duda, tienes toda la info en:'
@@ -67,7 +65,7 @@ def printGoodBye():
     print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
     print '| Asi como por e-mail a traves de: ' + email
     print '-' * 60
-    
+
 def printStarting(text):
     os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
@@ -80,11 +78,11 @@ def winGetpass(prompt='Password: ', stream=None):
     """Prompt for password with echo off, using Windows getch()."""
     if sys.stdin is not sys.__stdin__:
         return fallback_getpass(prompt, stream)
-    
+
     import msvcrt
     for c in prompt:
         msvcrt.putch(c)
-    
+
     pw = ""
     while 1:
         c = msvcrt.getch()
@@ -105,9 +103,9 @@ def winGetpass(prompt='Password: ', stream=None):
             msvcrt.putch("*")
     msvcrt.putch('\r')
     msvcrt.putch('\n')
-    
+
     return pw
-    
+
 def getData():
     os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
@@ -126,97 +124,95 @@ def getData():
     else:
         password = getpass.getpass()
     print '-' * 60
-    
-    return email, password 
-    
-def backupPhotos(email, password):
-    printStarting('fotos')
-    
-    s = requests.Session()
 
-    r = s.get(BASEURI + "?m=Login", verify=False)
-    csrf = re.findall('name="csrf" value="(.*?)"', r.text)[0]
-    data = {
-        "csrf": csrf,
-        "tuentiemailaddress": email,
-        "password": password,
-        "remember": 1}
-    r = s.post(BASEURI + "?m=Login&f=process_login", data)
+    return email, password
 
-    if 'tuentiemail' in r.cookies:
-        return False
+def printEnding(text):
+    os.system('cls' if os.name == WINDOWS else 'clear')
+    print '-' * 60
+    print '| 20up version ' + version
+    print '|'
+    print '| Terminado el backup de ' + text + '...'
+    raw_input('| Pulsa ENTER para continuar')
+    print '-' * 60
 
-    for i in range(1, 3):
-        r = s.get(BASEURI + "?m=Profile&func=my_profile", verify=False)
-        print '| Descargando fotos ' + dirs[i - 1] + '...'
-        album = BASEURI + "?m=Albums&func=index&collection_key=%i-" % i + \
-            re.findall('key=%i-(.*?)&' % i, r.text)[0]
+def printHelp():
+    os.system('cls' if os.name == WINDOWS else 'clear')
+    print '-' * 60
+    print '| 20up version ' + version
+    print '|'
+    print '| 20up es una aplicacion para hacer un backup de tu Tuenti.'
+    print '| 20up no se responsabiliza de los usos derivados que se le'
+    print '| puedan dar a esta aplicacion.'
+    print '| 20up tiene como proposito poder realizar un backup de tu'
+    print '| cuenta de usuario de Tuenti, de forma que tendras todas tus'
+    print '| fotos, sus comentarios, comentarios de tablon y datos de tus'
+    print '| contactos en tu ordenador.'
+    print '| 20up no almacena ni envia tu correo o contrasenya a terceras'
+    print '| personas o cuentas de Tuenti.'
+    print '| 20up es software libre, liberado bajo licencia GPLv3.'
+    print '| Por favor, si tienes alguna duda, visita la web:'
+    print '|'
+    print '|           ' + web
+    print '|'
+    print '| Tambien puedes resolver tus dudas en twitter: ' + twitter
+    print '| Asi como por e-mail a traves de: ' + email
+    print '-' * 60
 
-        r = s.get(album, verify=False)
-        firstPic = BASEURI + "?m=Photos&func=view_album_photo&collection_key=%i-" % i + \
-            re.findall('key=%i-(.*?)&' % i, r.text)[0]
-
-        r = s.get(firstPic, verify=False)
-        picQuantity = int(
-            re.findall('[of|de|\/|sur|di|van|z]\s(\d+)\)', r.text)[0])
-            
-        photoDownloadUrl = re.findall('img\ssrc="(.*?)"', r.text)[0]
-        if picQuantity > 1:
-            nextPhotoUrl = re.findall(
-                '\)\s\<a href="(.*?)"',
-                r.text)[0].replace("&amp;",
-                                   "&")  # not loading a whole lib for one single entity
-        else:
-            nextPhotoUrl = None
-
-        for x in range(1, picQuantity + 1):
-            if x != 1:
-                r = s.get(
-                    nextPhotoUrl,
-                    cookies={"screen": "1920-1080-1920-1040-1-20.74"}, verify=False)
-                photoDownloadUrl = re.findall('img\ssrc="(.*?)"', r.text)[0]
-                if x != picQuantity:
-                    nextPhotoUrl = re.findall(
-                        '\)\s\<a href="(.*?)"',
-                        r.text)[0].replace("&amp;", "&")
-                        
-            albumPath = os.path.join(PATH, dirs[i - 1])
-            
-            if not os.path.exists(albumPath):
-                os.makedirs(albumPath)
-                print "| Creado el directorio %s" % dirs[i - 1]
-            
-            filename = os.path.join(albumPath, str(x) + '.jpg')
-            if not os.path.exists(filename):
-                with open(filename, "wb") as handle:
-                    r = s.get(photoDownloadUrl, verify=False)
-
-                    for block in r.iter_content(1024):
-                        if not block:
-                            break
-
-                        handle.write(block)
-
-                percent = (x * 100) / picQuantity
-                print '| %s.jpg descargada (%i%%)... (album %i/2)' % (x, percent, i)
-                sleep(0.5)  # avoid flooding
-
-    return True
+def printMenu():
+    os.system('cls' if os.name == WINDOWS else 'clear')
+    print '-' * 60
+    print '| 20up version ' + version
+    print '|'
+    print '| Pulsa un numero en funcion de lo que quieras hacer:'
+    print '| 1 - Backup total (fotos, comentarios de fotos y tablon)'
+    print '| 2 - Backup de fotos'
+    print '| 3 - Backup de fotos y sus comentarios'
+    print '| 4 - Backup de tablon'
+    print '| 5 - Ayuda'
+    print '| 6 - Salir'
+    print '-' * 60
 
 def main():
-    done = False
-    while not done:
-        email, password = getData()
-        done = backupPhotos(email, password)
-        if not done:
-            print
-            print '| Ha habido algun error'
-            print '| Es posible que el usuario y/o la password sean incorrectos'
-            raw_input('| Pulsa ENTER para continuar')
-    
-    printGoodBye()
-        
-    print '| Hasta pronto :)'
+    email, password = getData()
+    try:
+        wrap = Wrapper(email, password, True)
+
+        respuesta = '0'
+        while respuesta != '6':
+            printMenu()
+            respuesta = raw_input('> ')
+
+            if respuesta == '1':
+                printStarting('todo')
+                wrap.downloadAllPictures(True)
+                wrap.downloadAllComments()
+                printEnding('todo')
+            elif respuesta == '2':
+                printStarting('fotos sin comentarios')
+                wrap.downloadAllPictures(True)
+                printEnding('fotos')
+            elif respuesta == '3':
+                printStarting('fotos con comentarios')
+                wrap.downloadAllPictures(False)
+                printEnding('fotos y sus comentarios')
+            elif respuesta == '4':
+                printStarting('tablon')
+                wrap.downloadAllComments()
+                printEnding('tablon')
+            elif respuesta == '5':
+                printHelp()
+                raw_input('> Presiona ENTER para continuar')
+            elif respuesta == '6':
+                pass
+            else:
+                print 'No has elegido una opcion valida'
+
+        printGoodBye()
+
+        print '| Hasta pronto :)'
+    except RuntimeError, e:
+        print e
 
 if __name__ == '__main__':
     printWelcome()
