@@ -24,7 +24,7 @@ This program downloads all of the photos, comments, and
 friends' information of an specific user.
 """
 
-import os, sys, getpass
+import os, sys, getpass, traceback
 from tntwrapper import *
 
 version = '3.0'
@@ -230,6 +230,14 @@ if __name__ == '__main__':
             raw_input()
             break
         except Exception, e:
+            print '|'
+            print '-' * 60
+            print '|'
+            tb_lines = traceback.format_exc().splitlines()
+            for line in tb_lines:
+              print '| ' + line
+            print '|'
+            print '-' * 60
             print '|'
             print '| Ha ocurrido un error inesperado:', e
             print '|'
