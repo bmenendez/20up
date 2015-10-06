@@ -94,7 +94,7 @@ class API():
             if 'collection_key' in link.url:
                 key = link.url.split('collection_key=')[1].split('&stats=')[0]
                 albums.append([key, normalize(link.text)])
-            if 'view_statuses&user_id' in link.url:
+            if 'm=Profile&func=view_wall&user_id' in link.url:
                 self.id = link.url.split('user_id=')[1].split('&')[0]
         return albums
 
