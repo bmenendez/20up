@@ -27,7 +27,7 @@ friends' information of an specific user.
 import os, sys, getpass, traceback
 from tntwrapper import *
 
-version = '3.0'
+version = '3.0.4'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@bmenendez_'
 email = 'tuentiup@gmail.com'
@@ -235,7 +235,7 @@ if __name__ == '__main__':
             print '|'
             tb_lines = traceback.format_exc().splitlines()
             for line in tb_lines:
-              print '| ' + line
+                print '| ' + line
             print '|'
             print '-' * 60
             print '|'

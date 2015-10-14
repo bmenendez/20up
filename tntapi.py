@@ -146,7 +146,10 @@ class API():
                     info = []
                     info.append(comment.find('a').contents[0]['alt']) # from
                     info.append(comment.find('div', {'class': 'time'}).contents[0]) # at
-                    info.append(comment.find('div', {'class': 'userContent'}).contents[0]) # comment
+                    try:
+                        info.append(comment.find('div', {'class': 'userContent'}).contents[0]) # comment
+                    except:
+                        continue
                     comm.append(info)
 
         return [picture, comm]
