@@ -101,13 +101,13 @@ class Wrapper():
             if pictures[0][0] != first or page == 0:
                 if self.console:
                     print '| Pagina', (page+1)
-                self.savePictures(albumPath, pictures, comments)
+                self.savePictures(albumPath, (page+1), pictures, comments)
             else:
                 break
             page += 1
             sleep(0.5)
 
-    def savePictures(self, albumPath, pictures, comments=False):
+    def savePictures(self, albumPath, page, pictures, comments=False):
         """
         Save a list of pictures.
 
@@ -119,7 +119,8 @@ class Wrapper():
         """
         myCounter = 1
         for pic in pictures:
-            picName = string.zfill(myCounter, CONSTANT_FILL) + '_' + pic[1] + JPG
+            fullName = string.zfill(page, CONSTANT_FILL) + '_' + string.zfill(myCounter, CONSTANT_FILL) + '_' + pic[1]
+            picName = fullName + JPG
             fileName = os.path.join(albumPath, picName)
             picInfo = self.tnt.getPicture(pic[0], comments)
             if not os.path.exists(fileName):
@@ -127,7 +128,7 @@ class Wrapper():
                     print '| Descargando foto ' + picName + '...'
                 urllib.urlretrieve(picInfo[0], fileName)
 
-            commentsFileName = string.zfill(myCounter, CONSTANT_FILL) + '_' + pic[1] + TXT
+            commentsFileName = fullName + TXT
             if comments and not os.path.exists(commentsFileName) and picInfo[1] != []:
                 if self.console:
                     print '| Descargando sus comentarios...'
