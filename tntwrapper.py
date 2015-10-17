@@ -27,7 +27,7 @@ import os, urllib, string
 from time import sleep
 from tntapi import *
 
-MAX_PICTURES_IN_ALBUM = 12
+MAX_PICTURES_IN_PAGE = 12
 MAX_COMMENTS_IN_WALL = 5
 CONSTANT_FILL = 6
 ROOTPATH = os.getcwdu()
@@ -94,6 +94,7 @@ class Wrapper():
             print '| Comenzando la descarga de las fotos del album...'
         page = 0
         first = ''
+        counter = 1
         while True:
             pictures = self.tnt.getPictures(albumid, page)
             if page == 0:
@@ -101,25 +102,26 @@ class Wrapper():
             if pictures[0][0] != first or page == 0:
                 if self.console:
                     print '| Pagina', (page+1)
-                self.savePictures(albumPath, (page+1), pictures, comments)
+                self.savePictures(albumPath, counter, pictures, comments)
             else:
                 break
             page += 1
+            counter += MAX_PICTURES_IN_PAGE
             sleep(0.5)
 
-    def savePictures(self, albumPath, page, pictures, comments=False):
+    def savePictures(self, albumPath, myCounter, pictures, comments=False):
         """
         Save a list of pictures.
 
         Args:
             albumPath: the path to the album in the directory tree.
+            myCounter: the counter of the pic to download.
             pictures: a list of pictures, where the first element is the url
                       and the second is a list of comments.
             comments: indicates wether obtain comments of the picture or not.
         """
-        myCounter = 1
         for pic in pictures:
-            fullName = string.zfill(page, CONSTANT_FILL) + '_' + string.zfill(myCounter, CONSTANT_FILL) + '_' + pic[1]
+            fullName = string.zfill(myCounter, CONSTANT_FILL) + '_' + pic[1]
             picName = fullName + JPG
             fileName = os.path.join(albumPath, picName)
             picInfo = self.tnt.getPicture(pic[0], comments)
@@ -158,7 +160,7 @@ class Wrapper():
         allAlbums = self.tnt.getAllAlbums()
 # just for testing allAlbums = allAlbums[2:]
         for album in allAlbums:
-            self.downloadPicturesFromAlbum(album[0], album[1], True)
+            self.downloadPicturesFromAlbum(album[0], album[1], comments)
 
     def downloadAllComments(self):
         """

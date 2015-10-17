@@ -27,7 +27,7 @@ friends' information of an specific user.
 import os, sys, getpass, traceback
 from tntwrapper import *
 
-version = '3.0.4'
+version = '3.0.6'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@bmenendez_'
 email = 'tuentiup@gmail.com'
@@ -190,11 +190,11 @@ def main():
                 printEnding('todo')
             elif respuesta == '2':
                 printStarting('fotos sin comentarios')
-                wrap.downloadAllPictures(True)
+                wrap.downloadAllPictures(False)
                 printEnding('fotos')
             elif respuesta == '3':
                 printStarting('fotos con comentarios')
-                wrap.downloadAllPictures(False)
+                wrap.downloadAllPictures(True)
                 printEnding('fotos y sus comentarios')
             elif respuesta == '4':
                 printStarting('tablon')
