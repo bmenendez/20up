@@ -27,7 +27,7 @@ friends' information of an specific user.
 import os, sys, getpass, traceback
 from tntwrapper import *
 
-version = '3.0.6'
+version = '3.1'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@bmenendez_'
 email = 'tuentiup@gmail.com'
@@ -169,8 +169,9 @@ def printMenu():
     print '| 2 - Backup de fotos'
     print '| 3 - Backup de fotos y sus comentarios'
     print '| 4 - Backup de tablon'
-    print '| 5 - Ayuda'
-    print '| 6 - Salir'
+    print '| 5 - Backup de amigos'
+    print '| 6 - Ayuda'
+    print '| 7 - Salir'
     print '-' * 60
 
 def main():
@@ -179,7 +180,7 @@ def main():
         wrap = Wrapper(email, password, True)
 
         respuesta = '0'
-        while respuesta != '6':
+        while respuesta != '7':
             printMenu()
             respuesta = raw_input('> ')
 
@@ -187,6 +188,7 @@ def main():
                 printStarting('todo')
                 wrap.downloadAllPictures(True)
                 wrap.downloadAllComments()
+                wrap.downloadFriends()
                 printEnding('todo')
             elif respuesta == '2':
                 printStarting('fotos sin comentarios')
@@ -201,9 +203,13 @@ def main():
                 wrap.downloadAllComments()
                 printEnding('tablon')
             elif respuesta == '5':
+                printStarting('amigos')
+                wrap.downloadFriends()
+                printEnding('amigos')
+            elif respuesta == '6':
                 printHelp()
                 raw_input('> Presiona ENTER para continuar')
-            elif respuesta == '6':
+            elif respuesta == '7':
                 pass
             else:
                 print 'No has elegido una opcion valida'

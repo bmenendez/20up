@@ -137,6 +137,14 @@ class API():
         soup = BeautifulSoup(r.read(), 'html.parser')
         # picture url
         picture = soup.find('div', {'class': 'full_size_photo'}).find('img')['src']
+        # date
+        date = ''
+        info = soup.findAll('div', {'class': 'box'})
+        for data in info:
+            text = '<span class="time">'
+            strData = str(data)
+            if text in strData:
+                date = '_'.join(strData.split(text)[1].split()[:4]).replace(',','').replace(':','-')
         # picture comments, if so
         comm = []
         if comments:
@@ -152,7 +160,7 @@ class API():
                         continue
                     comm.append(info)
 
-        return [picture, comm]
+        return [picture, comm, date]
 
     def getFriendsIDs(self, page):
         """
@@ -183,13 +191,19 @@ class API():
             userid: the user ID.
 
         Returns:
-            A list containing the information of a concrete user:
-                blabla
-                blabla
-                blabla
+            A string with the birthday of userid
         """
-        # TODO: get the data of userid
-        pass
+        r = self.br.open(URLS['profile'] % str(userid))
+        soup = BeautifulSoup(r.read(), 'html.parser')
+        infos = soup.findAll('div', {'class': 'box'})
+        
+        birthday = ''
+        for info in infos:
+            strInfo = str(info)
+            if 'strong' in strInfo:
+                birthday = strInfo.split('</strong>')[1].split('<br')[0]
+        
+        return birthday
 
     def getWall(self, page):
         """

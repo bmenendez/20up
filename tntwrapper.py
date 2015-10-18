@@ -122,9 +122,9 @@ class Wrapper():
         """
         for pic in pictures:
             fullName = string.zfill(myCounter, CONSTANT_FILL) + '_' + pic[1]
-            picName = fullName + JPG
-            fileName = os.path.join(albumPath, picName)
             picInfo = self.tnt.getPicture(pic[0], comments)
+            picName = fullName + '_' + picInfo[2] + JPG
+            fileName = os.path.join(albumPath, picName)
             if not os.path.exists(fileName):
                 if self.console:
                     print '| Descargando foto ' + picName + '...'
@@ -205,3 +205,31 @@ class Wrapper():
             file2write.write('******************\r\n')
             file2write.write(comment[0].encode('utf-8') + ' (' + comment[1].encode('utf-8') + ' ):\r\n')
             file2write.write(comment[2].encode('utf-8') + '\r\n')
+            
+    def downloadFriends(self):
+        """
+        Save information about your friends
+        
+        Raises:
+            RuntimeError if the user is not already logged in.
+        """
+        if not self.isLogged:
+            raise RuntimeError('Es necesario estar logueado en Tuenti')
+        
+        file2write = open('contactos.txt', 'w')
+        page = 0
+        while True:
+            if self.console:
+                print '| Pagina', (page+1)
+            listFriends = self.tnt.getFriendsIDs(page)
+            if not listFriends:
+                break
+                
+            for friend in listFriends:
+                birthday = self.tnt.getUserData(friend[0])
+                text = friend[1] + ':' + birthday + '\r\n'
+                file2write.write(text)
+                
+            page += 1
+            
+        file2write.close()
