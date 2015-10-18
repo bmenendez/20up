@@ -216,7 +216,9 @@ class Wrapper():
         if not self.isLogged:
             raise RuntimeError('Es necesario estar logueado en Tuenti')
         
+        os.chdir(ROOTPATH)
         file2write = open('contactos.txt', 'w')
+        
         page = 0
         while True:
             if self.console:
