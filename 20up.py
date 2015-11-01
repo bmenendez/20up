@@ -27,7 +27,7 @@ friends' information of an specific user.
 import os, sys, getpass, traceback
 from tntwrapper import *
 
-version = '3.1'
+version = '3.1.2'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@bmenendez_'
 email = 'tuentiup@gmail.com'

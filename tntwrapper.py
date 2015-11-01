@@ -121,9 +121,11 @@ class Wrapper():
             comments: indicates wether obtain comments of the picture or not.
         """
         for pic in pictures:
-            fullName = string.zfill(myCounter, CONSTANT_FILL) + '_' + pic[1]
             picInfo = self.tnt.getPicture(pic[0], comments)
-            picName = fullName + '_' + picInfo[2] + JPG
+            if not picInfo:
+                continue
+            fullName = string.zfill(myCounter, CONSTANT_FILL) + '_' + pic[1]
+            picName = normalize(fullName + '_' + picInfo[2] + JPG)
             fileName = os.path.join(albumPath, picName)
             if not os.path.exists(fileName):
                 if self.console:

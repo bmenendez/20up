@@ -135,32 +135,38 @@ class API():
         """
         r = self.br.open(URLS['photo'] % pictureid)
         soup = BeautifulSoup(r.read(), 'html.parser')
-        # picture url
-        picture = soup.find('div', {'class': 'full_size_photo'}).find('img')['src']
-        # date
-        date = ''
-        info = soup.findAll('div', {'class': 'box'})
-        for data in info:
-            text = '<span class="time">'
-            strData = str(data)
-            if text in strData:
-                date = '_'.join(strData.split(text)[1].split()[:4]).replace(',','').replace(':','-')
-        # picture comments, if so
-        comm = []
-        if comments:
-            allComments = soup.findAll('li', {'class': 'item inline'})
-            if allComments != []:
-                for comment in allComments:
-                    info = []
-                    info.append(comment.find('a').contents[0]['alt']) # from
-                    info.append(comment.find('div', {'class': 'time'}).contents[0]) # at
-                    try:
-                        info.append(comment.find('div', {'class': 'userContent'}).contents[0]) # comment
-                    except:
-                        continue
-                    comm.append(info)
+        returningInfo = []
+        try:
+            # picture url
+            picture = soup.find('div', {'class': 'full_size_photo'}).find('img')['src']
+            # date
+            date = ''
+            info = soup.findAll('div', {'class': 'box'})
+            for data in info:
+                text = '<span class="time">'
+                strData = str(data)
+                if text in strData:
+                    date = '_'.join(strData.split(text)[1].split()[:4]).replace(',','').replace(':','-')
+            # picture comments, if so
+            comm = []
+            if comments:
+                allComments = soup.findAll('li', {'class': 'item inline'})
+                if allComments != []:
+                    for comment in allComments:
+                        info = []
+                        info.append(comment.find('a').contents[0]['alt']) # from
+                        info.append(comment.find('div', {'class': 'time'}).contents[0]) # at
+                        try:
+                            info.append(comment.find('div', {'class': 'userContent'}).contents[0]) # comment
+                        except:
+                            continue
+                        comm.append(info)
+                        
+            returningInfo = [picture, comm, date]
+        except:
+            pass
 
-        return [picture, comm, date]
+        return returningInfo
 
     def getFriendsIDs(self, page):
         """
