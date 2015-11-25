@@ -207,7 +207,10 @@ class API():
         for info in infos:
             strInfo = str(info)
             if 'strong' in strInfo:
-                birthday = strInfo.split('</strong>')[1].split('<br')[0]
+                try:
+                    birthday = strInfo.split('</strong>')[1].split('<br')[0]
+                except:
+                    pass
         
         return birthday
 

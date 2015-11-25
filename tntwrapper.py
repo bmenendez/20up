@@ -231,8 +231,9 @@ class Wrapper():
                 
             for friend in listFriends:
                 birthday = self.tnt.getUserData(friend[0])
-                text = friend[1] + ':' + birthday + '\r\n'
-                file2write.write(text)
+                if birthday != '':
+                    text = friend[1] + ':' + birthday + '\r\n'
+                    file2write.write(text)
                 
             page += 1
             
