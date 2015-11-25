@@ -182,11 +182,11 @@
 
 <p>La segunda opci&oacute;n:
 <ul>
-    <li>Descargar python 2.7 de la <a href="http://www.python.org/getit/">p&aacute;gina oficial</a>. O directamente de <a href="http://www.python.org/ftp/python/3.3.2/python-3.3.2.msi">este enlace</a> (sacado de la p&aacute;gina oficial). Una vez instalado, modificar la variable de entorno PATH; para ello, bastar&aacute; con hacer clic derecho en &quot;Mi PC&quot; o &quot;Equipo&quot; &rarr; Propiedades &rarr; Configuraci&oacute;n avanzada del sistema &rarr; Variables de entorno &rarr; Buscar la que se llama &quot;Path&quot; &rarr; Editar... &rarr; A&ntilde;adir el directorio donde se ha instalado Python con un &quot;;&quot; antes (en mi caso &quot;;C:\Python27&quot;).</li>
+    <li>Descargar python 2.7 de la <a href="http://www.python.org/getit/">p&aacute;gina oficial</a>. O directamente de <a href="https://www.python.org/ftp/python/2.7.10/python-2.7.10.msi">este enlace</a> (sacado de la p&aacute;gina oficial). Una vez instalado, modificar la variable de entorno PATH; para ello, bastar&aacute; con hacer clic derecho en &quot;Mi PC&quot; o &quot;Equipo&quot; &rarr; Propiedades &rarr; Configuraci&oacute;n avanzada del sistema &rarr; Variables de entorno &rarr; Buscar la que se llama &quot;Path&quot; &rarr; Editar... &rarr; A&ntilde;adir el directorio donde se ha instalado Python con un &quot;;&quot; antes (en mi caso &quot;;C:\Python27&quot;).</li>
     <li>Instalar <a href="https://pypi.python.org/pypi/setuptools/1.0#windows">SetupTools</a>* y modificar la variable de entorno PATH como se ha especificado anteriormente, pero a&ntilde;adiendo esta vez el directorio &quot;Scripts&quot; de la instalaci&oacute;n de python (en mi caso &quot;;C:\Python27\Scripts&quot;). *Nota: para ejecutar cualquier script de python basta con teclear en una consola de sistema <code>python nombreScript.py</code>, donde &quot;nombreScript.py&quot; es el script que quieres ejecutar.</li>
-    <li>Instalar los m&oacute;dulos de python &quot;BeautifoulSoup&quot; y &quot;Mechanize&quot;: abrir una consola de sistema (buscar &quot;cmd&quot;) y poner <code>easy_install beautifoulsoup4 mechanize</code>.</li>
+    <li>Instalar los m&oacute;dulos de python &quot;BeautifulSoup&quot; y &quot;Mechanize&quot;: abrir una consola de sistema (buscar &quot;cmd&quot;) y poner <code>easy_install --always-unzip beautifulsoup4 mechanize</code>.</li>
     <li>Descargar el <a href="https://github.com/bmenendez/20up/zipball/master">c&oacute;digo fuente</a> de <b>20up</b> y descompr&iacute;melo donde quieras.</li>
-    <li>Una vez instalados, acceder mediante consola al directorio donde tengamos <b>20up</b> y ejecutar <code>python 20up.py</code>. Seguir las instrucciones.</li>
+    <li>Una vez instalados, se puede hacer doble clic en 20up.py y, si est&aacute; todo correctamente instalado, se lanzar&aacute; el programa. Si no, se puede acceder mediante consola al directorio donde tengamos <b>20up</b> y ejecutar <code>python 20up.py</code>. Despu&eacute;s, seguir las instrucciones.</li>
 </ul>
 </p>
 
@@ -202,6 +202,12 @@
 
 <h2>
 <a name="roadmap" class="anchor" href="#roadmap"><span class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<p>3.1.3:
+<ul>
+    <li>Corrige el error que daba si no se encontraba el cumplea&ntilde;os de un amigo.</li>
+</ul>
+</p>
 
 <p>3.1.2:
 <ul>
