@@ -16,6 +16,41 @@
     <![endif]-->
 
     <title>20up | Descarga todas tus fotos de Tuenti</title>
+    
+    <link rel="stylesheet" href="./assets/css/emojione.min.css" type="text/css" media="all" />
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+    <script src="./javascripts/emojione.js"></script>
+    
+    <script type="text/javascript">
+        // #################################################
+        // # Optional
+
+        // default is PNG but you may also use SVG
+        emojione.imageType = 'svg';
+
+        // default is ignore ASCII smileys like :) but you can easily turn them on
+        emojione.ascii = true;
+
+        // if you want to host the images somewhere else
+        // you can easily change the default paths
+        emojione.imagePathPNG = './assets/png/';
+        emojione.imagePathSVG = './assets/svg/';
+
+        // #################################################
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".convert-emoji").each(function() {
+                var original = $(this).html();
+                // use .shortnameToImage if only converting shortnames (for slightly better performance)
+                var converted = emojione.toImage(original);
+                $(this).html(converted);
+            });
+        });
+    </script>
 
     <script type="text/javascript">
         var _gaq = _gaq || [];
@@ -57,43 +92,66 @@
       <div class="inner clearfix">
         <section id="main-content">
           <h2>
-<a name="bienvenido-a-20up" class="anchor" href="#bienvenido-a-20up"><span class="octicon octicon-link"></span></a>Bienvenido a 20up</h2>
+          <a name="bienvenido-a-20up" class="anchor" href="#bienvenido-a-20up"><span class="octicon octicon-link"></span></a>Obt&eacute;n tus datos de Tuenti en 3 c&oacute;modos pasos...</h2>
 
-<p>&iexcl;Con 20up podr&aacute;s hacer un backup completo de todo tu Tuenti! Despreoc&uacute;pate de si tus amigos te env&iacute;an las fotos de la fiesta de ayer o de si te da pereza ver los comentarios que te pusieron hace 10 meses :)</p>
+<p>
+    <h3 class="convert-emoji">:floppy_disk: Descargar</h3>
+    <h3 class="convert-emoji">:computer: Ejecutar (si tienes problemas, mira primero <a href="#faq">aqu&iacute;</a>)</h3>
+    <h3 class="convert-emoji">:heart_eyes: Donar (<a href="#donar">&iquest;por qu&eacute; hacerlo?</a>)</h3>
+</p>
 
-<p>Con <b>20up</b> podr&aacute;s:
+<h2>
+<a name="que-obtendras" class="anchor" href="#que-obtendras"><span class="octicon octicon-link"></span></a>&iquest;Qu&eacute; obtendr&aacute;s?</h2>
+
+<p>Todo tu Tuenti:
 <ul>
-    <li>Descargar <b>todas</b> tus <b>fotos</b> con sus comentarios, orden&aacute;ndolas por album y por fecha como en Tuenti.</li>
-    <li>Descargar <b>todos</b> tus <b>comentarios de tabl&oacute;n</b> orden&aacute;ndolos por fecha como en Tuenti.</li>
-    <li>Descargar los <b>cumplea&ntilde;os</b> de <b>todos</b> tus contactos Tuenti.</li>
+    <li class="convert-emoji"><b>Todas</b> tus <b>fotos</b> :camera_with_flash: con sus comentarios, orden&aacute;ndolas por album y por fecha como en Tuenti.</li>
+    <li class="convert-emoji"><b>Todos</b> tus <b>comentarios de tabl&oacute;n</b> :book: orden&aacute;ndolos por fecha como en Tuenti.</li>
+    <li class="convert-emoji">Los <b>cumplea&ntilde;os</b> :birthday: de <b>todos</b> tus contactos Tuenti.</li>
 </ul>
 </p>
 
-<p></p>
+<p class="convert-emoji">&iquest;Quieres tambi&eacute;n tus mensajes privados :envelope:? Ahora los puedes descargar desde Tuenti :wink:.</p>
 
-<p>Una vez se empiecen a descargar tus datos, se crear&aacute;n diferentes archivos en el directorio donde hayas ejecutado el programa: un directorio &quot;fotos&quot; en el que se crear&aacute;n en forma de directorio todos los &aacute;lbums que tengas en Tuenti;  &quot;comentarios.txt&quot;, un fichero de texto con todos los comentarios de tu tabl&oacute;n; y &quot;contactos.txt&quot;, un fichero de texto con el nombre de tus amigos y su cumplea&ntilde;os.</strike></p>
+<h2>
+<a name="donde-se-descarga" class="anchor" href="#donde-se-descarga"><span class="octicon octicon-link"></span></a>&iquest;D&oacute;nde se guarda toda la informaci&oacute;n?</h2>
 
-<p>AHORA: te puedes descargar tus mensajes privados desde el mismo Tuenti.</p>
+<p>Donde hayas ejecutado <b>20up</b> (si es en Descargas, all&iacute; lo tendr&aacute;s) estar&aacute;:
+<ul>
+    <li>La carpeta &quot;fotos&quot;, con todas tus fotos y sus comentarios.</li>
+    <li>El fichero &quot;comentarios.txt&quot;, con todos tus comentarios de tabl&oacute;n.</li>
+    <li>El fichero &quot;contactos.txt&quot;, con el nombre de tus amigos y sus cumplea&ntilde;os.</li>
+</ul>
+</p>
 
-<p>Sigue las instrucciones de uso para ordenadores con <b><a href="http://bmenendez.github.io/20up#Windows">Windows</a></b> y para ordenadores con <b><a href="http://bmenendez.github.io/20up#Linux">Linux</a></b>. Para ordenadores con Mac no he podido probar nada, pero os dejo en <a href="http://bmenendez.github.io/20up#mac-tutorial">esta secci&oacute;n</a> un peque&ntilde;o tutorial por si se pudiera ejecutar correctamente.</p>
+<h2 class="convert-emoji">
+<a name="necesitas-instrucciones" class="anchor" href="#necesitas-instrucciones"><span class="octicon octicon-link"></span></a>&iquest;Necesitas instrucciones :books:?</h2>
+
+<p>Aqu&iacute; las tienes tanto para <b><a href="#Windows">Windows</a></b> como <a href="#mac-tutorial">Mac</a> y <b><a href="#Linux">Linux</a></b>.
 
 <p><b>20up</b> NO guarda ni env&iacute;a informaci&oacute;n tuya ni de tus contactos a nadie, ni tan siquiera de manera temporal. Por eso, cada vez que inicias el programa te pide tus datos de Tuenti.</p>
 
 <h2>
 <a name="Windows" class="anchor" href="#Windows"><span class="octicon octicon-link"></span></a>Usuarios de Windows</h2>
 
-<p>Lo primero de todo, desactiva el antivirus; si no, es muy posible que no funcione. La desactivaci&oacute;n del antivirus depende mucho tanto del antivirus como de su versi&oacute;n, as&iacute; que lo mejor es que busques en Google c&oacute;mo hacerlo para el tuyo. <a href="https://github.com/bmenendez/20up/raw/master/windows/20up.exe">Descargar</a> el ejecutable, hacer clic derecho y seleccionar &quot;Ejecutar como administrador&quot; para no tener ning&uacute;n problema a la hora de descargar las im&aacute;genes en el equipo. Una vez ejecutado, seguir las instrucciones.</p>
+<p>
+<ul>
+    <li><a href="https://github.com/bmenendez/20up/raw/master/windows/20up.exe">Descargar</a> el ejecutable.</li>
+    <li>Hacer clic derecho y seleccionar &quot;Ejecutar como administrador&quot; para no tener problemas.</li>
+    <li>Seguir las instrucciones.</li>
+</ul>
+</p>
 
-<p><center><img src="https://dl.dropboxusercontent.com/u/11143437/admin_20up.png" alt="Ejecutar como administrador en Windows"></center></p>
+<p>Es posible que tengas que desactivar el antivirus si ves que no te funciona. La desactivaci&oacute;n del antivirus depende mucho tanto del antivirus como de su versi&oacute;n, as&iacute; que lo mejor es que busques en Google c&oacute;mo hacerlo para el tuyo.</p>
 
-<p>Si esta opci&oacute;n no funcionase, existe una <a href="http://bmenendez.github.io/20up#Windows-dificil">segunda forma</a>. Requiere un poco m&aacute;s de trabajo, pero deber&iacute;a de funcionar.</p>
+<p>Si esta opci&oacute;n no funcionase, existe una <a href="#Windows-dificil">segunda forma</a>. Requiere un poco m&aacute;s de trabajo, pero deber&iacute;a funcionar.</p>
 
-<p>Tambi&eacute;n existe la posibilidad de ejecutar la antigua versi&oacute;n 2.0 de 20up. Solo te la tienes que descargar <a href="https://github.com/bmenendez/20up/raw/master/oldstable/20up.exe">de aqu&iacute;</a>. Solo te podr&aacute;s descargar las fotos en las que sales etiquetado y las subidas por ti, pero menos da una piedra :)</p>
+<p class="convert-emoji">Tambi&eacute;n existe la posibilidad de ejecutar la antigua versi&oacute;n 2.0 de 20up. Te la puedes descargar <a href="https://github.com/bmenendez/20up/raw/master/oldstable/20up.exe">de aqu&iacute;</a>. Solo te podr&aacute;s descargar las fotos en las que sales etiquetado y las subidas por ti, pero menos da una piedra :sweat_smile:.</p>
 
 <h2>
 <a name="Linux" class="anchor" href="#Linux"><span class="octicon octicon-link"></span></a>Usuarios de Linux</h2>
 
-<p>Para usar <b>20up</b>, primero <a href="https://github.com/bmenendez/20up/tarball/master">desc&aacute;rgalo</a> y descompr&iacute;melo en tu ordenador o bien clona con git <a href="https://github.com/bmenendez/20up">el proyecto</a>.</p>
+<p><a href="https://github.com/bmenendez/20up/tarball/master">Desc&aacute;rgalo</a> y descompr&iacute;melo en tu ordenador o bien clona con git <a href="https://github.com/bmenendez/20up">el proyecto</a>.</p>
 
 <p>Despu&eacute;s instala pip, el instalador de m&oacute;dulos de python:</p>
 
@@ -105,14 +163,12 @@
 
 <p>Una vez instalados, m&eacute;tete con la terminal en el directorio donde descargaste <b>20up</b> y ejecuta:</p>
 
-<p><code>python 20up.py</code></p>
+<p><code>$ python 20up.py</code></p>
 
-<p>Sigue las instrucciones, y a disfrutar :).</p>
+<p>Sigue las instrucciones, ¡y a disfrutar!</p>
 
 <h2>
 <a name="mac-tutorial" class="anchor" href="#mac-tutorial"><span class="octicon octicon-link"></span></a>Usuarios de Mac</h2>
-
-<p><b>20up</b> NO ha sido probado en Mac todav&iacute;a. No s&eacute; si python viene instalado por defecto en Mac, pero por si las moscas, pongo aqu&iacute; simplemente enlaces para que puedas ejecutar python en Mac sin problemas y, as&iacute;, conseguir utilizar <b>20up</b>. Nada de lo puesto aqu&iacute; ha sido probado tampoco.</p>
 
 <p>Instala python <a href="http://docs.python.org/2/using/mac.html">en Mac</a> (si no estuviese ya instalado).</p>
 
@@ -130,26 +186,31 @@
 <a name="faq" class="anchor" href="#faq"><span class="octicon octicon-link"></span></a>FAQ (preguntas m&aacute;s frecuentes)</h2>
 
 <h3>
+<a name="error-login" class="anchor" href="#error-login"><span class="octicon octicon-link"></span></a>Me da el error &quot;Imposible hacer login en Tuenti&quot;</h3>
+
+<p class="convert-emoji">Cuando te metes en <a href="www.tuenti.com">Tuenti</a>, ¿te puedes meter a la red social o te redirige a <a href="www.tuenti.com.ar">su versi&oacute;n argentina</a>? Si es lo segundo, te tienes que poner en contacto con Tuenti a trav&eacute;s de otras redes sociales (como <a href="https://twitter.com/tuenti">twitter</a>, por ejemplo) y que te solucionen ellos el problema. Una vez puedas entrar a la red social, podr&aacute;s usar 20up sin problemas :sunrise:.</p>
+
+<h3>
 <a name="me-da-un-error-inesperado" class="anchor" href="#me-da-un-error-inesperado"><span class="octicon octicon-link"></span></a>Me da un error inesperado</h3>
 
-<p>Estoy descargando mis fotos y me salta un error. No dudes en <a href="http://bmenendez.github.io/20up#contacto">contactar</a> conmigo detallando al m&aacute;ximo c&oacute;mo se ha producido el problema y con el pantallazo del error a ser posible.</p>
+<p class="convert-emoji">Estoy descargando mis fotos y me salta un error. No dudes en <a href="#contacto">contactar</a> conmigo detallando al m&aacute;ximo c&oacute;mo se ha producido el problema y con el pantallazo del error a ser posible. Te contestar&eacute; lo antes posible :clock1:.</p>
 
 <h3>
 <a name="que-pasa-si-no-me-funciona" class="anchor" href="#que-pasa-si-no-me-funciona"><span class="octicon octicon-link"></span></a>&iquest;Qu&eacute; pasa si no me funciona?</h3>
 
 <p>Es posible que tu antivirus haya bloqueado a <b>20up</b> porque no sepa su procedencia. Si tienes Avast instalado, lo normal es que el antivirus quiera ejecutar el programa en su Sandbox para que no haya problemas; para ello, bastar&aacute; con decirle que <b>20up</b> es seguro y que puede ejecutarse con normalidad. En cualquier caso, recomiendo desactivar el antivirus durante la ejecuci&oacute;n del programa, as&iacute; no habr&aacute; ning&uacute;n problema.</p>
 
-<p>Si te sigue sin funcionar, no te preocupes: siempre puedes ponerte en <a href="http://bmenendez.github.io/20up#contacto">contacto</a> conmigo especific&aacute;ndome el problema e intentar&eacute; solucionarlo lo antes posible. Por favor, procura adjuntar pantallazo del error que te d&eacute; e informaci&oacute;n detallada.</p>
+<p>Si te sigue sin funcionar, no te preocupes: siempre puedes ponerte en <a href="#contacto">contacto</a> conmigo especific&aacute;ndome el problema e intentar&eacute; solucionarlo lo antes posible. Por favor, procura adjuntar pantallazo del error que te d&eacute; e informaci&oacute;n detallada.</p>
 
 <h3>
 <a name="se-queda-parado" class="anchor" href="#se-queda-parado"><span class="octicon octicon-link"></span></a>Hay veces que se queda parado, &iquest;es grave, doctor?</h3>
 
-<p>No, no es grave. De hecho, es normal. Hay veces que tarda un poco m&aacute;s en descargar una imagen, no pasa nada. Lo que no se debe hacer es cerrar el programa por este hecho. Cada imagen como m&iacute;nimo tardar&aacute; medio segundo en descargarse, as&iacute; que paciencia, por favor :).</p>
+<p class="convert-emoji">No, no es grave. De hecho, es normal. Hay veces que tarda un poco m&aacute;s en descargar una imagen, no pasa nada. Lo que no se debe hacer es cerrar el programa por este hecho. Cada imagen como m&iacute;nimo tardar&aacute; medio segundo en descargarse, as&iacute; que paciencia, por favor :grinning:.</p>
 
 <h3>
 <a name="si-lo-paro" class="anchor" href="#si-lo-paro"><span class="octicon octicon-link"></span></a>Ten&iacute;a prisa, he cerrado el programa, &iquest;tengo que volver a bajarme todas las fotos que ya me hab&iacute;a descargado?</h3>
 
-<p>No, ni mucho menos. <b>20up</b> est&aacute; preparado para eso y las im&aacute;genes que ya te hayas descargado no se volver&aacute;n a descargar, aunque tendr&aacute; que comprobar que realmente las tienes descargadas y eso le puede llevar un tiempo. En cambio, no ocurre lo mismo con los comentarios; siempre que lo pares y hagas un backup completo todo se descargar&aacute;n de nuevo, aunque no tardar&aacute; mucho, es solo texto ;-).</p>
+<p class="convert-emoji">No, ni mucho menos. <b>20up</b> est&aacute; preparado para eso y las im&aacute;genes que ya te hayas descargado no se volver&aacute;n a descargar, aunque tendr&aacute; que comprobar que realmente las tienes descargadas y eso le puede llevar un tiempo. En cambio, no ocurre lo mismo con los comentarios; siempre que lo pares y hagas un backup completo se descargar&aacute;n de nuevo, aunque no tardar&aacute; mucho, es solo texto :wink:.</p>
 
 <h3>
 <a name="tildes" class="anchor" href="#tildes"><span class="octicon octicon-link"></span></a>No has puesto ni una sola tilde en el programa, ya te vale</h3>
@@ -159,12 +220,21 @@
 <h3>
 <a name="ejecutable" class="anchor" href="#ejecutable"><span class="octicon octicon-link"></span></a>Quiero generar yo mismo el ejecutable y comprobar la suma MD5 para saber de primera mano que no me est&aacute;s enga&ntilde;ando</h3>
 
-<p>Me parece genial :) Sigue las instrucciones puestas en el proyecto <a href="http://github.com/bmenendez/20up">en github</a>.</p>
+<p class="convert-emoji">Me parece genial :grinning: Sigue las instrucciones puestas en el proyecto <a href="http://github.com/bmenendez/20up">en github</a>.</p>
 
 <h3>
-<a name="donar" class="anchor" href="#donar"><span class="octicon octicon-link"></span></a>Bot&oacute;n de donaci&oacute;n</h3>
+<a name="donar" class="anchor" href="#donar"><span class="octicon octicon-link"></span></a>&iquest;Por qu&eacute; donar?</h3>
 
-<p>A varios de vosotros se os ha ocurrido la genial idea de poder donar algo de dinero, ya que os ha parecido &uacute;til de alguna forma 20up. En un principio me he negado a recibir donaciones, pero siendo un proyecto de software libre me parece un poco injusto coartar la libertad de sus usuarios. As&iacute; pues, he a&ntilde;adido un bot&oacute;n de donar con Paypal. Lo ten&eacute;is a la derecha, justo encima de las descargas. Desde ya os adelanto las gracias, ya que nunca pens&eacute; que esto fuera a suceder.</p>
+<p>Algunas cifras:
+<ul>
+    <li class="convert-emoji">:calendar: M&aacute;s de dos a&ntilde;os en activo, corriegiendo errores y mejorando la aplicaci&oacute;n.</li>
+    <li class="convert-emoji">:chart_with_upwards_trend: M&aacute;s de 100.000 visitas y 70.000 usuarios que han usado <b>20up</b>.</li>
+    <li class="convert-emoji">:card_index: M&aacute;s de 300 correos respondidos. <u>Siempre</u> contesto.</li>
+    <li class="convert-emoji">:tools: Soporte individualizado a problemas concretos. Intento solucionar todas las dudas.</li>
+</ul>
+</p>
+
+<p class="convert-emoji"<b>20up</b> ahorra mucho tiempo, no tienes que estar haciendo pantallazos ni descarg&aacute;ndote tu Tuenti foto a foto. Si crees que tus recuerdos y mi esfuerzo en que los recuperes bien valen una cerveza :beer:, dale al bot&oacute;n de donar. Te estar&eacute; eternamente agradecido :smiley:.</p>
 
 <h2>
 <a name="contacto" class="anchor" href="#contacto"><span class="octicon octicon-link"></span></a>Contacto</h2>
@@ -194,6 +264,10 @@
 <a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
 
 <p><b>20up</b> es una aplicaci&oacute;n realizada con el &uacute;nico prop&oacute;sito de poder hacer un backup de tu cuenta de Tuenti, es decir, de datos que son exclusivamente tuyos. El desarrollador no se responsabiliza del uso que se le pueda dar a la aplicaci&oacute;n.</p>
+
+<p>Los emoticonos han sido obtenidos gratuitamente gracias a <a href="http://emojione.com/">Emoji One</a>.</p>
+
+<p>Emoji provided free by <a href="http://emojione.com/">Emoji One</a>.</p>
 
 <h2>
 <a name="licencia" class="anchor" href="#licencia"><span class="octicon octicon-link"></span></a>Licencia</h2>
@@ -389,6 +463,7 @@
         </aside>
       </div>
     </div>
+
 
 
   </body>
