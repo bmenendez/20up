@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Copyright (C) 2013 Borja Menendez Moreno
+Copyright (C) 2016 Borja Menendez Moreno
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 Authors: Borja Menéndez Moreno <tuentiup@gmail.com>
 
 This is the API Wrapper for the 20up backup program. This wrapper allows
-a client to retrieve information about his specific Tuenti account.
+a client to retrieve information about his specific account.
 """
 
 import os, urllib, string
@@ -38,7 +38,7 @@ TXT = '.txt'
 class Wrapper():
     """
     The wrapper for the tntapi.
-    This class eases the connection with Tuenti.
+    This class eases the connection.
 
     When constructed, it raises a RuntimeError if it is impossible to log in the
     social network.
@@ -47,7 +47,7 @@ class Wrapper():
         self.tnt = API()
         self.isLogged = False
         if not self.tnt.doLogin(email, password):
-            raise RuntimeError('Imposible hacer login en Tuenti')
+            raise RuntimeError('Imposible hacer login en la red social')
         self.console = console
         self.isLogged = True
 
@@ -65,7 +65,7 @@ class Wrapper():
             RuntimeError if the user is not already logged in.
         """
         if not self.isLogged:
-            raise RuntimeError('Es necesario estar logueado en Tuenti')
+            raise RuntimeError('Es necesario estar logueado en la red social')
 
         if self.console:
             print '|'
@@ -96,6 +96,7 @@ class Wrapper():
         first = ''
         counter = 1
         while True:
+            sleep(0.5)
             pictures = self.tnt.getPictures(albumid, page)
             if page == 0:
                 first = pictures[0][0]
@@ -107,7 +108,6 @@ class Wrapper():
                 break
             page += 1
             counter += MAX_PICTURES_IN_PAGE
-            sleep(0.5)
 
     def savePictures(self, albumPath, myCounter, pictures, comments=False):
         """
@@ -121,6 +121,7 @@ class Wrapper():
             comments: indicates wether obtain comments of the picture or not.
         """
         for pic in pictures:
+            sleep(0.5)
             picInfo = self.tnt.getPicture(pic[0], comments)
             if not picInfo:
                 continue
@@ -130,6 +131,7 @@ class Wrapper():
             if not os.path.exists(fileName):
                 if self.console:
                     print '| Descargando foto ' + picName + '...'
+                sleep(0.5)
                 urllib.urlretrieve(picInfo[0], fileName)
 
             commentsFileName = fullName + TXT
@@ -144,7 +146,6 @@ class Wrapper():
                 file2write.close()
 
             myCounter += 1
-            sleep(0.5)
 
     def downloadAllPictures(self, comments=False):
         """
@@ -157,7 +158,7 @@ class Wrapper():
             RuntimeError if the user is not already logged in.
         """
         if not self.isLogged:
-            raise RuntimeError('Es necesario estar logueado en Tuenti')
+            raise RuntimeError('Es necesario estar logueado en la red social')
 
         allAlbums = self.tnt.getAllAlbums()
 # just for testing allAlbums = allAlbums[2:]
@@ -172,7 +173,7 @@ class Wrapper():
             RuntimeError if the user is not already logged in.
         """
         if not self.isLogged:
-            raise RuntimeError('Es necesario estar logueado en Tuenti')
+            raise RuntimeError('Es necesario estar logueado en la red social')
 
         os.chdir(ROOTPATH)
         file2write = open('comentarios.txt', 'w')
@@ -184,11 +185,11 @@ class Wrapper():
         while not ended:
             if self.console:
                 print '| Pagina', page
+            sleep(0.5)
             comments = self.tnt.getWall(page)
             if comments != []:
                 self.saveComments(comments, file2write)
                 page += 5
-                sleep(0.5)
             else:
                 ended = True
 
@@ -216,7 +217,7 @@ class Wrapper():
             RuntimeError if the user is not already logged in.
         """
         if not self.isLogged:
-            raise RuntimeError('Es necesario estar logueado en Tuenti')
+            raise RuntimeError('Es necesario estar logueado en la red social')
         
         os.chdir(ROOTPATH)
         file2write = open('contactos.txt', 'w')
@@ -225,11 +226,13 @@ class Wrapper():
         while True:
             if self.console:
                 print '| Pagina', (page+1)
+            sleep(0.5)
             listFriends = self.tnt.getFriendsIDs(page)
             if not listFriends:
                 break
                 
             for friend in listFriends:
+                sleep(0.5)
                 birthday = self.tnt.getUserData(friend[0])
                 if birthday != '':
                     text = friend[1] + ':' + birthday + '\r\n'

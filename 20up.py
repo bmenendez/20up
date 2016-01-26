@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Copyright (C) 2013 Borja Menendez Moreno
+Copyright (C) 2016 Borja Menendez Moreno
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Authors: Borja Menéndez Moreno <tuentiup@gmail.com>
 
-Program for the backup of Tuenti, a Spanish social network.
+Program for the backup of a Spanish social network.
 This program downloads all of the photos, comments, and
 friends' information of an specific user.
 """
@@ -27,7 +27,7 @@ friends' information of an specific user.
 import os, sys, getpass, traceback
 from tntwrapper import *
 
-version = '3.1.3'
+version = '3.1.4'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@bmenendez_'
 email = 'tuentiup@gmail.com'
@@ -110,11 +110,11 @@ def getData():
     os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| Para poder hacer el backup necesito un poco mas'
-    print '| de informacion sobre tu cuenta de Tuenti...'
+    print '| de informacion sobre tu cuenta...'
     print '|'
     print '| Esta informacion no se almacenara en ningun sitio'
     print '| ni se enviara a ningun lado, solamente se requiere'
-    print '| para la conexion con tu cuenta de Tuenti :)'
+    print '| para la conexion con tu cuenta :)'
     print
     email = raw_input('E-mail: ')
     while not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -141,15 +141,15 @@ def printHelp():
     print '-' * 60
     print '| 20up version ' + version
     print '|'
-    print '| 20up es una aplicacion para hacer un backup de tu Tuenti.'
+    print '| 20up es una aplicacion para hacer un backup de tu 20.'
     print '| 20up no se responsabiliza de los usos derivados que se le'
     print '| puedan dar a esta aplicacion.'
     print '| 20up tiene como proposito poder realizar un backup de tu'
-    print '| cuenta de usuario de Tuenti, de forma que tendras todas tus'
+    print '| cuenta de usuario, de forma que tendras todas tus'
     print '| fotos, sus comentarios, comentarios de tablon y datos de tus'
     print '| contactos en tu ordenador.'
     print '| 20up no almacena ni envia tu correo o contrasenya a terceras'
-    print '| personas o cuentas de Tuenti.'
+    print '| personas o cuentas de la red social.'
     print '| 20up es software libre, liberado bajo licencia GPLv3.'
     print '| Por favor, si tienes alguna duda, visita la web:'
     print '|'

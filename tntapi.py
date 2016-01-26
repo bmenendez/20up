@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Copyright (C) 2013 Borja Menendez Moreno
+Copyright (C) 2016 Borja Menendez Moreno
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,22 +20,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 Authors: Borja Menéndez Moreno <tuentiup@gmail.com>
 
 This is the API for the 20up backup program. This API allows a client
-to retrieve information about his specific Tuenti account.
+to retrieve information about his specific account.
 """
 
 import mechanize, cookielib
 import re, unicodedata
 from bs4 import BeautifulSoup
 
-TUENTI_HOST = 'https://m.tuenti.com'
+TWENTY_HOST = 'https://m.tuenti.com'
 URLS = {
-    'login':        TUENTI_HOST + '/?m=login',
-    'friends':      TUENTI_HOST + '/?m=friends&page=%s',
-    'profile':      TUENTI_HOST + '/?m=profile&user_id=%s',
-    'comments':     TUENTI_HOST + '/?m=profile&func=view_wall&user_id=%s&fpi=%s',
-    'my_profile':   TUENTI_HOST + '/?m=profile&func=my_profile',
-    'albums':       TUENTI_HOST + '/?m=Albums&func=view_album_display&collection_key=%s&photos_page=%s',
-    'photo':        TUENTI_HOST + '/?m=Photos&func=view_album_photo&collection_key=%s',
+    'login':        TWENTY_HOST + '/?m=login',
+    'friends':      TWENTY_HOST + '/?m=friends&page=%s',
+    'profile':      TWENTY_HOST + '/?m=profile&user_id=%s',
+    'comments':     TWENTY_HOST + '/?m=profile&func=view_wall&user_id=%s&fpi=%s',
+    'my_profile':   TWENTY_HOST + '/?m=profile&func=my_profile',
+    'albums':       TWENTY_HOST + '/?m=Albums&func=view_album_display&collection_key=%s&photos_page=%s',
+    'photo':        TWENTY_HOST + '/?m=Photos&func=view_album_photo&collection_key=%s',
 }
 
 def normalize(text):
@@ -45,7 +45,7 @@ def normalize(text):
 
 class API():
     """
-    The Tuenti API class.
+    The API class.
     This class is used for getting information.
     It only parses html pages and returns the requested information.
     """
@@ -66,11 +66,11 @@ class API():
 
     def doLogin(self, email, password):
         """
-        The method that starts the connection with Tuenti.
+        The method that starts the connection with the server.
 
         Args:
-            email: the Tuenti user's email address.
-            password: the Tuenti user's password.
+            email: the user's email address.
+            password: the user's password.
         """
         self.br.open(URLS['login'])
         self.br.select_form(nr = 0)
@@ -83,7 +83,7 @@ class API():
         """
         Get all the albums for the given user.
         An album is a pair of (key, link), where <key> is the identification
-        number of the album in Tuenti and <link> is the url of the album.
+        number of the album and <link> is the url of the album.
 
         Returns:
             A list of albums.
@@ -102,7 +102,7 @@ class API():
         """
         Get pictures from a given album.
         A picture is a pair of (key, link), where <key> is the identification
-        number of the picture in Tuenti and <link> is the url of the picture.
+        number of the picture and <link> is the url of the picture.
 
         Args:
             albumid: the <key> of an album.
