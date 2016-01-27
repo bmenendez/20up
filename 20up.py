@@ -141,7 +141,7 @@ def printHelp():
     print '-' * 60
     print '| 20up version ' + version
     print '|'
-    print '| 20up es una aplicacion para hacer un backup de tu 20.'
+    print '| 20up es una aplicacion para hacer backup de tu red social favorita.'
     print '| 20up no se responsabiliza de los usos derivados que se le'
     print '| puedan dar a esta aplicacion.'
     print '| 20up tiene como proposito poder realizar un backup de tu'
