@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-Authors: Borja Menéndez Moreno <tuentiup@gmail.com>
+Authors: Borja Menéndez Moreno <info20up@gmail.com>
 
 Program for the backup of a Spanish social network.
 This program downloads all of the photos, comments, and
@@ -30,7 +30,7 @@ from tntwrapper import *
 version = '3.1.4'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@bmenendez_'
-email = 'tuentiup@gmail.com'
+email = 'info20up@gmail.com'
 
 WINDOWS = 'nt'
 

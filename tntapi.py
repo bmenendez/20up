@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-Authors: Borja Menéndez Moreno <tuentiup@gmail.com>
+Authors: Borja Menéndez Moreno <info20up@gmail.com>
 
 This is the API for the 20up backup program. This API allows a client
 to retrieve information about his specific account.
