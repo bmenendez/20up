@@ -51,21 +51,6 @@
             });
         });
     </script>
-    
-    <script>
-    /**
-    * Function that tracks a click on an outbound link in Google Analytics.
-    * This function takes a valid URL string as an argument, and uses that URL string
-    * as the event label. Setting the transport method to 'beacon' lets the hit be sent
-    * using 'navigator.sendBeacon' in browser that support it.
-    */
-    var trackOutboundLink = function(url) {
-       ga('send', 'event', 'outbound', 'click', url, {
-         'transport': 'beacon',
-         'hitCallback': function(){document.location = url;}
-       });
-    }
-    </script> 
 
     <script type="text/javascript">
         var _gaq = _gaq || [];
@@ -471,15 +456,15 @@
 <img alt="" border="0" src="https://www.paypalobjects.com/es_ES/i/scr/pixel.gif" width="1" height="1">
 </form>
           </a></br>
-          <a href="https://github.com/bmenendez/20up/raw/master/windows/20up.exe" onclick="trackOutboundLink('https://github.com/bmenendez/20up/raw/master/windows/20up.exe'); return false;" class="button">
+          <a href="https://github.com/bmenendez/20up/raw/master/windows/20up.exe" class="button">
             <small>Descarga</small>
             Windows
           </a>
-          <a href="https://github.com/bmenendez/20up/zipball/master" onclick="trackOutboundLink('https://github.com/bmenendez/20up/zipball/master'); return false;" class="button">
+          <a href="https://github.com/bmenendez/20up/zipball/master" class="button">
             <small>Descarga</small>
             .zip
           </a>
-          <a href="https://github.com/bmenendez/20up/tarball/master" onclick="trackOutboundLink('https://github.com/bmenendez/20up/tarball/master'); return false;" class="button">
+          <a href="https://github.com/bmenendez/20up/tarball/master" class="button">
             <small>Descarga</small>
             .tar.gz
           </a>
