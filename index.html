@@ -51,6 +51,21 @@
             });
         });
     </script>
+    
+    <script>
+    /**
+    * Function that tracks a click on an outbound link in Google Analytics.
+    * This function takes a valid URL string as an argument, and uses that URL string
+    * as the event label. Setting the transport method to 'beacon' lets the hit be sent
+    * using 'navigator.sendBeacon' in browser that support it.
+    */
+    var trackOutboundLink = function(url) {
+       ga('send', 'event', 'outbound', 'click', url, {
+         'transport': 'beacon',
+         'hitCallback': function(){document.location = url;}
+       });
+    }
+    </script> 
 
     <script type="text/javascript">
         var _gaq = _gaq || [];
@@ -64,18 +79,19 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
     </script>
-<!--
+    
+    <!-- Google Analytics -->
     <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-15476124-11', 'bmenendez.github.io');
-      ga('send', 'pageview');
-
+    ga('create', 'UA-15476124-11', 'auto');
+    ga('send', 'pageview');
     </script>
--->
+    <!-- End Google Analytics -->
+
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
   </head>
 
@@ -83,7 +99,7 @@
     <header>
       <div class="inner">
         <h1>20up</h1>
-        <h2>20up es un programa para hacer un backup de tu red social espa&ntilde;ola favorita. Descarga todas tus fotos, sus comentarios, comentarios de tabl&oacute;n e informaci&oacute;n de tus contactos (cumplea&ntilde;os).</h2>
+        <h2>20up es un programa para hacer un backup de tu red social espa&ntilde;ola favorita. Descarga todas tus fotos y sus comentarios.</h2>
         <a href="https://github.com/bmenendez/20up" class="button"><small>Ver proyecto en</small>GitHub</a>
       </div>
     </header>
@@ -106,8 +122,6 @@
 <p>Toda tu informaci&oacute;n:
 <ul>
     <li class="convert-emoji"><b>Todas</b> tus <b>fotos</b> :camera_with_flash: con sus comentarios, orden&aacute;ndolas por album y por fecha.</li>
-    <li class="convert-emoji"><b>Todos</b> tus <b>comentarios de tabl&oacute;n</b> :book: orden&aacute;ndolos por fecha.</li>
-    <li class="convert-emoji">Los <b>cumplea&ntilde;os</b> :birthday: de <b>todos</b> tus contactos.</li>
 </ul>
 </p>
 
@@ -119,17 +133,19 @@
 <p>Donde hayas ejecutado <b>20up</b> (si es en Descargas, all&iacute; lo tendr&aacute;s) estar&aacute;:
 <ul>
     <li>La carpeta &quot;fotos&quot;, con todas tus fotos y sus comentarios.</li>
-    <li>El fichero &quot;comentarios.txt&quot;, con todos tus comentarios de tabl&oacute;n.</li>
-    <li>El fichero &quot;contactos.txt&quot;, con el nombre de tus amigos y sus cumplea&ntilde;os.</li>
 </ul>
 </p>
 
 <h2 class="convert-emoji">
 <a name="necesitas-instrucciones" class="anchor" href="#necesitas-instrucciones"><span class="octicon octicon-link"></span></a>&iquest;Necesitas instrucciones :books:?</h2>
 
-<p>Aqu&iacute; las tienes tanto para <b><a href="#Windows">Windows</a></b> como <a href="#mac-tutorial">Mac</a> y <b><a href="#Linux">Linux</a></b>.
+<p>Ahora 20up utiliza tu navegador web para descargar tus datos. Necesitas tener instalado <a href="https://www.mozilla.org/es-ES/firefox/new/">Mozilla Firefox</a> (recomendado) o <a href="https://www.google.es/chrome/browser/desktop/">Google Chrome</a>. Si quieres usar Google Chrome, adem&aacute;s, necesitas descargarte <a href="http://chromedriver.storage.googleapis.com/index.html?path=2.21/">ChromeDriver</a>. Una vez descargado, descompr&iacute;melo y ponlo en la misma carpeta que 20up.</p>
 
-<p><b>20up</b> NO guarda ni env&iacute;a informaci&oacute;n tuya ni de tus contactos a nadie, ni tan siquiera de manera temporal. Por eso, cada vez que inicias el programa te pide tus datos de inicio de sesi&oacute;n.</p>
+<p>MUY IMPORTANTE: una vez se abra el navegador, introduce tu correo y contrase&tilde;a como har&iacute;s normalmente, y dale al bot&oacute;n de entrar a la red social.</p>
+
+<p>Aqu&iacute; tienes instrucciones m&aacute;s espec&iacute;ficas tanto para <b><a href="#Windows">Windows</a></b> como <a href="#mac-tutorial">Mac</a> y <b><a href="#Linux">Linux</a></b>.
+
+<p><b>20up</b> NO guarda ni env&iacute;a informaci&oacute;n tuya ni de tus contactos a nadie, ni siquiera de manera temporal.</p>
 
 <h2>
 <a name="Windows" class="anchor" href="#Windows"><span class="octicon octicon-link"></span></a>Usuarios de Windows</h2>
@@ -138,7 +154,7 @@
 <ul>
     <li><a href="https://github.com/bmenendez/20up/raw/master/windows/20up.exe">Descargar</a> el ejecutable.</li>
     <li>Hacer clic derecho y seleccionar &quot;Ejecutar como administrador&quot; para no tener problemas.</li>
-    <li>Seguir las instrucciones.</li>
+    <li>Seguir las instrucciones de 20up.</li>
 </ul>
 </p>
 
@@ -155,9 +171,9 @@
 
 <p><code>$ sudo apt-get install python-pip</code></p>
 
-<p><b>20up</b> depende de dos m&oacute;dulos externo a python: <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a> y <a href="http://wwwsearch.sourceforge.net/mechanize/">Mechanize</a>. Desc&aacute;rgalos con pip:</p>
+<p><b>20up</b> depende de dos m&oacute;dulos externo a python: <a href="http://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a> y <a href="http://www.seleniumhq.org/">Selenium</a>. Desc&aacute;rgalos con pip:</p>
 
-<p><code>$ sudo pip install beautifulsoup4 mechanize</code></p>
+<p><code>$ sudo pip install beautifulsoup4 selenium</code></p>
 
 <p>Una vez instalados, m&eacute;tete con la terminal en el directorio donde descargaste <b>20up</b> y ejecuta:</p>
 
@@ -174,9 +190,9 @@
 
 <p><code>sudo easy_install pip</code></p>
 
-<p>Ahora instala BeautifulSoup y Mechanize, los m&oacute;dulos de los que depende <b>20up</b>:</p>
+<p>Ahora instala BeautifulSoup y Selenium, los m&oacute;dulos de los que depende <b>20up</b>:</p>
 
-<p><code>sudo pip install beautifulsoup4 mechanize</code></p>
+<p><code>sudo pip install beautifulsoup4 selenium</code></p>
 
 <p>Descarga <a href="https://github.com/bmenendez/20up/tarball/master">20up</a> y ejec&uacute;talo a trav&eacute;s de la terminal. Para ello, ejecuta <code>python 20up.py</code> y sigue las instrucciones.</p>
 
@@ -184,9 +200,9 @@
 <a name="faq" class="anchor" href="#faq"><span class="octicon octicon-link"></span></a>FAQ (preguntas m&aacute;s frecuentes)</h2>
 
 <h3>
-<a name="error-login" class="anchor" href="#error-login"><span class="octicon octicon-link"></span></a>Me da el error &quot;Imposible hacer login en la red social&quot;</h3>
+<a name="error-login" class="anchor" href="#error-login"><span class="octicon octicon-link"></span></a>No puedo entrar a la red social</h3>
 
-<p class="convert-emoji">Cuando te metes en <a href="http://www.tuenti.com">su web</a>, ¿te puedes meter a la red social o te redirige a <a href="http://www.tuenti.com.ar">su versi&oacute;n argentina</a>? Si es lo segundo, te tienes que poner en contacto con ellos a trav&eacute;s de otras redes sociales (como <a href="https://twitter.com/tuenti">twitter</a>, por ejemplo) y que te solucionen ellos el problema. Una vez puedas entrar a la red social, podr&aacute;s usar 20up sin problemas :sunrise:.</p>
+<p class="convert-emoji">¿Tte puedes meter a la red social o te redirige a <a href="http://www.tuenti.com.ar">su versi&oacute;n argentina</a>? Si es lo segundo, te tienes que poner en contacto con ellos a trav&eacute;s de otras redes sociales (como <a href="https://twitter.com/tuenti">twitter</a>, por ejemplo) y que te solucionen ellos el problema. Una vez puedas entrar, podr&aacute;s usar 20up sin problemas :sunrise:.</p>
 
 <h3>
 <a name="me-da-un-error-inesperado" class="anchor" href="#me-da-un-error-inesperado"><span class="octicon octicon-link"></span></a>Me da un error inesperado</h3>
@@ -226,8 +242,8 @@
 <p>Algunas cifras:
 <ul>
     <li class="convert-emoji">:calendar: M&aacute;s de dos a&ntilde;os en activo, corrigiendo errores y mejorando la aplicaci&oacute;n.</li>
-    <li class="convert-emoji">:chart_with_upwards_trend: M&aacute;s de 100.000 visitas y 70.000 usuarios que han usado <b>20up</b>.</li>
-    <li class="convert-emoji">:card_index: M&aacute;s de 300 correos respondidos. <u>Siempre</u> contesto.</li>
+    <li class="convert-emoji">:chart_with_upwards_trend: M&aacute;s de 200.000 visitas y 100.000 usuarios que han usado <b>20up</b>.</li>
+    <li class="convert-emoji">:card_index: M&aacute;s de 2000 correos respondidos. <u>Siempre</u> contesto.</li>
     <li class="convert-emoji">:tools: Soporte individualizado a problemas concretos. Intento solucionar todas las dudas.</li>
 </ul>
 </p>
@@ -252,7 +268,7 @@
 <ul>
     <li>Descargar python 2.7 de la <a href="http://www.python.org/getit/">p&aacute;gina oficial</a>. O directamente de <a href="https://www.python.org/ftp/python/2.7.10/python-2.7.10.msi">este enlace</a> (sacado de la p&aacute;gina oficial). Una vez instalado, modificar la variable de entorno PATH; para ello, bastar&aacute; con hacer clic derecho en &quot;Mi PC&quot; o &quot;Equipo&quot; &rarr; Propiedades &rarr; Configuraci&oacute;n avanzada del sistema &rarr; Variables de entorno &rarr; Buscar la que se llama &quot;Path&quot; &rarr; Editar... &rarr; A&ntilde;adir el directorio donde se ha instalado Python con un &quot;;&quot; antes (en mi caso &quot;;C:\Python27&quot;).</li>
     <li>Instalar <a href="https://pypi.python.org/pypi/setuptools/1.0#windows">SetupTools</a>* y modificar la variable de entorno PATH como se ha especificado anteriormente, pero a&ntilde;adiendo esta vez el directorio &quot;Scripts&quot; de la instalaci&oacute;n de python (en mi caso &quot;;C:\Python27\Scripts&quot;). *Nota: para ejecutar cualquier script de python basta con teclear en una consola de sistema <code>python nombreScript.py</code>, donde &quot;nombreScript.py&quot; es el script que quieres ejecutar.</li>
-    <li>Instalar los m&oacute;dulos de python &quot;BeautifulSoup&quot; y &quot;Mechanize&quot;: abrir una consola de sistema (buscar &quot;cmd&quot;) y poner <code>easy_install --always-unzip beautifulsoup4 mechanize</code>.</li>
+    <li>Instalar los m&oacute;dulos de python &quot;BeautifulSoup&quot; y &quot;Selenium&quot;: abrir una consola de sistema (buscar &quot;cmd&quot;) y poner <code>easy_install --always-unzip beautifulsoup4 selenium</code>.</li>
     <li>Descargar el <a href="https://github.com/bmenendez/20up/zipball/master">c&oacute;digo fuente</a> de <b>20up</b> y descompr&iacute;melo donde quieras.</li>
     <li>Una vez instalados, se puede hacer doble clic en 20up.py y, si est&aacute; todo correctamente instalado, se lanzar&aacute; el programa. Si no, se puede acceder mediante consola al directorio donde tengamos <b>20up</b> y ejecutar <code>python 20up.py</code>. Despu&eacute;s, seguir las instrucciones.</li>
 </ul>
@@ -274,6 +290,13 @@
 
 <h2>
 <a name="roadmap" class="anchor" href="#roadmap"><span class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<p>4.0:
+<ul>
+    <li>Totalmente renovado, ahora 20up solo descarga fotos y sus comentarios.</li>
+    <li>Usa un navegador web que renderiza el javascript y se encarga de la sesi&oacute;n del usuario.</li>
+</ul>
+</p>
 
 <p>3.1.4:
 <ul>
@@ -448,15 +471,15 @@
 <img alt="" border="0" src="https://www.paypalobjects.com/es_ES/i/scr/pixel.gif" width="1" height="1">
 </form>
           </a></br>
-          <a href="https://github.com/bmenendez/20up/raw/master/windows/20up.exe" class="button">
+          <a href="https://github.com/bmenendez/20up/raw/master/windows/20up.exe" onclick="trackOutboundLink('https://github.com/bmenendez/20up/raw/master/windows/20up.exe'); return false; class="button">
             <small>Descarga</small>
             Windows
           </a>
-          <a href="https://github.com/bmenendez/20up/zipball/master" class="button">
+          <a href="https://github.com/bmenendez/20up/zipball/master" onclick="trackOutboundLink('https://github.com/bmenendez/20up/zipball/master'); return false; class="button">
             <small>Descarga</small>
             .zip
           </a>
-          <a href="https://github.com/bmenendez/20up/tarball/master" class="button">
+          <a href="https://github.com/bmenendez/20up/tarball/master" onclick="trackOutboundLink('https://github.com/bmenendez/20up/tarball/master'); return false; class="button">
             <small>Descarga</small>
             .tar.gz
           </a>
