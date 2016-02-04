@@ -24,13 +24,19 @@ This program downloads all of the photos, comments, and
 friends' information of an specific user.
 """
 
-import os, sys, getpass, traceback
+import os, traceback
 from tntwrapper import *
 
-version = '3.1.4'
+version = '4.0'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@bmenendez_'
 email = 'info20up@gmail.com'
+
+BOPTIONS = {
+    '1':    'ch',
+    '2':    'fi',
+    '3':    'xx'
+}
 
 WINDOWS = 'nt'
 
@@ -73,59 +79,21 @@ def printStarting(text):
     print '|'
     print '| Comenzando el backup de ' + text + '...'
     print '-' * 60
-
-def winGetpass(prompt='Password: ', stream=None):
-    """Prompt for password with echo off, using Windows getch()."""
-    if sys.stdin is not sys.__stdin__:
-        return fallback_getpass(prompt, stream)
-
-    import msvcrt
-    for c in prompt:
-        msvcrt.putch(c)
-
-    pw = ""
-    while 1:
-        c = msvcrt.getch()
-        if c == '\r' or c == '\n':
-            break
-        if c == '\003':
-            raise KeyboardInterrupt
-        if c == '\b':
-            if pw == '':
-                pass
-            else:
-                pw = pw[:-1]
-                msvcrt.putch('\b')
-                msvcrt.putch(" ")
-                msvcrt.putch('\b')
-        else:
-            pw = pw + c
-            msvcrt.putch("*")
-    msvcrt.putch('\r')
-    msvcrt.putch('\n')
-
-    return pw
-
-def getData():
+    
+def getBrowser():
     os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
-    print '| Para poder hacer el backup necesito un poco mas'
-    print '| de informacion sobre tu cuenta...'
-    print '|'
-    print '| Esta informacion no se almacenara en ningun sitio'
-    print '| ni se enviara a ningun lado, solamente se requiere'
-    print '| para la conexion con tu cuenta :)'
-    print
-    email = raw_input('E-mail: ')
-    while not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-        email = raw_input('El e-mail no es valido, intenta de nuevo: ')
-    if os.name == WINDOWS:
-        password = winGetpass()
-    else:
-        password = getpass.getpass()
+    print '| Que navegador web utilizas habitualmente?'
+    print '| 1 - Google Chrome'
+    print '| 2 - Mozilla Firefox'
+    print '| 3 - Otro'
     print '-' * 60
-
-    return email, password
+    return raw_input('> ')
+    
+def printErrorBrowser():
+    print '|'
+    print '| Por favor, elige una opcion valida (numeros del 1 al 5)'
+    raw_input('| Pulsa ENTER para continuar')
 
 def printEnding(text):
     os.system('cls' if os.name == WINDOWS else 'clear')
@@ -142,14 +110,12 @@ def printHelp():
     print '| 20up version ' + version
     print '|'
     print '| 20up es una aplicacion para hacer backup de tu red social favorita.'
-    print '| 20up no se responsabiliza de los usos derivados que se le'
-    print '| puedan dar a esta aplicacion.'
+    print '| Ni 20up ni su desarrollador se responsabilizan de los usos'
+    print '| derivados que se le puedan dar a esta aplicacion.'
     print '| 20up tiene como proposito poder realizar un backup de tu'
     print '| cuenta de usuario, de forma que tendras todas tus'
-    print '| fotos, sus comentarios, comentarios de tablon y datos de tus'
-    print '| contactos en tu ordenador.'
-    print '| 20up no almacena ni envia tu correo o contrasenya a terceras'
-    print '| personas o cuentas de la red social.'
+    print '| fotos y sus comentarios, y comentarios de tablon (proximamente).'
+    print '| 20up no compromete ni tu seguridad ni tu privacidad.'
     print '| 20up es software libre, liberado bajo licencia GPLv3.'
     print '| Por favor, si tienes alguna duda, visita la web:'
     print '|'
@@ -168,49 +134,85 @@ def printMenu():
     print '| 1 - Backup total (fotos, comentarios de fotos y tablon)'
     print '| 2 - Backup de fotos'
     print '| 3 - Backup de fotos y sus comentarios'
-    print '| 4 - Backup de tablon'
-    print '| 5 - Backup de amigos'
-    print '| 6 - Ayuda'
-    print '| 7 - Salir'
+    print '| 4 - Backup de tablon (proximamente)'
+    print '| 5 - Ayuda'
+    print '| 6 - Salir'
+    print '-' * 60
+    
+def printAlert():
+    os.system('cls' if os.name == WINDOWS else 'clear')
+    print '-' * 60
+    print '| 20up version ' + version
+    print '|'
+    print '| ATENCION: ahora se abrira un navegador web, el que hayas elegido.'
+    print '|           1 - NO cierres esta ventana.'
+    print '|           2 - NO cierres el navegador.'
+    print '|           3 - Entra a la red social desde el navegador como harias'
+    print '|               normalmente.'
+    print '|           4 - Una vez estes dentro de la red, sigue las'
+    print '|               instrucciones que te apareceran aqui :-)'
     print '-' * 60
 
 def main():
-    email, password = getData()
+    browser = getBrowser()
+    while browser not in BOPTIONS:
+        printErrorBrowser()
+        browser = getBrowser()
+        
+    if browser == '3':
+        print '| Por favor, instala uno de los navegadores compatibles con 20up'
+        print '| Despues podras utilizarlo sin problemas'
+        return
+        
+    printAlert()
+    raw_input('> Presiona ENTER para continuar')
     try:
-        wrap = Wrapper(email, password, True)
+        wrap = Wrapper(BOPTIONS[browser], True)
 
         respuesta = '0'
-        while respuesta != '7':
+        while respuesta != '6':
             printMenu()
             respuesta = raw_input('> ')
 
             if respuesta == '1':
                 printStarting('todo')
-                wrap.downloadAllPictures(True)
-                wrap.downloadAllComments()
-                wrap.downloadFriends()
-                printEnding('todo')
+                ret = wrap.downloadAllPictures(True)
+                if ret == -1:
+                    #wrap.downloadAllComments()
+                    print '| Primero debes hacer login en la red social'
+                    raw_input('> Presiona ENTER para continuar')
+                else:
+                    printEnding('todo')
             elif respuesta == '2':
                 printStarting('fotos sin comentarios')
-                wrap.downloadAllPictures(False)
-                printEnding('fotos')
+                ret = wrap.downloadAllPictures(False)
+                if ret == -1:
+                    print '| Primero debes hacer login en la red social'
+                    raw_input('> Presiona ENTER para continuar')
+                else:
+                    printEnding('fotos')
             elif respuesta == '3':
                 printStarting('fotos con comentarios')
-                wrap.downloadAllPictures(True)
-                printEnding('fotos y sus comentarios')
+                ret = wrap.downloadAllPictures(True)
+                if ret == -1:
+                    print '| Primero debes hacer login en la red social'
+                    raw_input('> Presiona ENTER para continuar')
+                else:
+                    printEnding('fotos y sus comentarios')
             elif respuesta == '4':
-                printStarting('tablon')
-                wrap.downloadAllComments()
-                printEnding('tablon')
+                print '| Esta opcion no esta disponible por el momento, lo siento'
+#                printStarting('tablon')
+#                wrap.downloadAllComments()
+#                printEnding('tablon')
             elif respuesta == '5':
-                printStarting('amigos')
-                wrap.downloadFriends()
-                printEnding('amigos')
-            elif respuesta == '6':
                 printHelp()
                 raw_input('> Presiona ENTER para continuar')
-            elif respuesta == '7':
-                pass
+            elif respuesta == '6':
+                wrap.goToPrivates()
+                print '|'
+                print '| Antes de salir, mira el regalito del navegador ;-)'
+                print '|'
+                raw_input('> Presiona ENTER para continuar')
             else:
                 print 'No has elegido una opcion valida'
 

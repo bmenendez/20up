@@ -27,13 +27,14 @@ import os, urllib, string
 from time import sleep
 from tntapi import *
 
-MAX_PICTURES_IN_PAGE = 12
-MAX_COMMENTS_IN_WALL = 5
 CONSTANT_FILL = 6
 ROOTPATH = os.getcwdu()
 PHOTOS = 'fotos'
 JPG = '.jpg'
 TXT = '.txt'
+
+def getFullName(picture, counter):
+    return normalize(string.zfill(counter, CONSTANT_FILL) + '_' + picture[2] + '_' + picture[1])
 
 class Wrapper():
     """
@@ -43,22 +44,17 @@ class Wrapper():
     When constructed, it raises a RuntimeError if it is impossible to log in the
     social network.
     """
-    def __init__(self, email, password, console=False):
-        self.tnt = API()
+    def __init__(self, browser, console=False):
+        self.tnt = API(browser)
         self.isLogged = False
-        if not self.tnt.doLogin(email, password):
-            raise RuntimeError('Imposible hacer login en la red social')
         self.console = console
-        self.isLogged = True
-
-    def downloadPicturesFromAlbum(self, albumid, directory, comments=False):
+            
+    def downloadPicturesFromAlbum(self, album, totalPictures, alreadyDownloaded, comments=False):
         """
         Download pictures from a given album into the given directory.
 
         Args:
-            albumid: the ID number of the album.
-            directory: the directory where the pictures are going to be
-                       downloaded.
+            album: the album.
             comments: indicates wether obtain comments of the picture or not.
 
         Raises:
@@ -66,10 +62,10 @@ class Wrapper():
         """
         if not self.isLogged:
             raise RuntimeError('Es necesario estar logueado en la red social')
-
+            
         if self.console:
             print '|'
-            print '| Album', directory
+            print '| Album', album[0]
             print '|'
             print '| Obteniendo informacion del album'
 
@@ -80,8 +76,8 @@ class Wrapper():
             os.makedirs(joinPath)
             if self.console:
                 print '| Directorio creado'
-
-        albumPath = os.path.join(joinPath, directory)
+                
+        albumPath = os.path.join(joinPath, album[0])
         if not os.path.exists(albumPath):
             if self.console:
                 print '| Creando directorio donde se alojaran las fotos del album...'
@@ -92,60 +88,58 @@ class Wrapper():
 
         if self.console:
             print '| Comenzando la descarga de las fotos del album...'
-        page = 0
-        first = ''
+            
         counter = 1
-        while True:
-            sleep(0.5)
-            pictures = self.tnt.getPictures(albumid, page)
-            if page == 0:
-                first = pictures[0][0]
-            if pictures[0][0] != first or page == 0:
-                if self.console:
-                    print '| Pagina', (page+1)
-                self.savePictures(albumPath, counter, pictures, comments)
-            else:
+        self.tnt.getFirstPicture(album[2])
+        while counter <= album[1]:
+            pic = self.tnt.getPicture(comments)
+            if counter == 1:
+                firstPicture = pic
+            elif pic[0] == firstPicture[0]:
                 break
-            page += 1
-            counter += MAX_PICTURES_IN_PAGE
-
-    def savePictures(self, albumPath, myCounter, pictures, comments=False):
+            self.savePicture(pic, counter, album[1], totalPictures, alreadyDownloaded + counter)
+            if comments:
+                self.saveComments(pic, counter)
+            self.tnt.getNextPicture()
+            counter += 1
+            
+    def savePicture(self, picture, myCounter, totalAlbum, totalPics, alreadyDown):
         """
-        Save a list of pictures.
+        Save a picture.
 
         Args:
-            albumPath: the path to the album in the directory tree.
-            myCounter: the counter of the pic to download.
-            pictures: a list of pictures, where the first element is the url
-                      and the second is a list of comments.
-            comments: indicates wether obtain comments of the picture or not.
+            picture: a picture to be saved.
+            myCounter: the counter for the picture.
         """
-        for pic in pictures:
-            sleep(0.5)
-            picInfo = self.tnt.getPicture(pic[0], comments)
-            if not picInfo:
-                continue
-            fullName = string.zfill(myCounter, CONSTANT_FILL) + '_' + pic[1]
-            picName = normalize(fullName + '_' + picInfo[2] + JPG)
-            fileName = os.path.join(albumPath, picName)
-            if not os.path.exists(fileName):
-                if self.console:
-                    print '| Descargando foto ' + picName + '...'
-                sleep(0.5)
-                urllib.urlretrieve(picInfo[0], fileName)
-
-            commentsFileName = fullName + TXT
-            if comments and not os.path.exists(commentsFileName) and picInfo[1] != []:
-                if self.console:
-                    print '| Descargando sus comentarios...'
-                file2write = open(commentsFileName, 'w')
-                for comment in picInfo[1]:
-                    file2write.write('******************\r\n')
-                    file2write.write(comment[0].encode('utf-8') + ' (' + comment[1].encode('utf-8') + '):\r\n')
-                    file2write.write(comment[2].encode('utf-8') + '\r\n')
-                file2write.close()
-
-            myCounter += 1
+        picName = getFullName(picture, myCounter) + JPG
+        if not os.path.exists(picName):
+            if self.console:
+                totalPerc = str(100 * alreadyDown / totalPics)
+                albumPerc = str(100 * myCounter / totalAlbum)
+                print '|'
+                print '| [' + totalPerc + '% total] [' + albumPerc + '% album]'
+                print '| Descargando foto ' + picName + '...'
+            sleep(0.25)
+            urllib.urlretrieve(picture[0], picName)
+            
+    def saveComments(self, picture, myCounter):
+        """
+        Save a picture's comments.
+        
+        Args:
+            picture: to obtain the comments.
+            myCounter: to know the name of the file with comments.
+        """
+        commentsFileName = getFullName(picture, myCounter) + TXT
+        if not os.path.exists(commentsFileName) and picture[3] != []:
+            if self.console:
+                print '| Descargando sus comentarios...'
+            file2write = open(commentsFileName, 'w')
+            for comment in picture[3]:
+                file2write.write('******************\r\n')
+                file2write.write(comment[1].encode('utf-8') + ':\r\n')
+                file2write.write(comment[0].encode('utf-8') + '\r\n')
+            file2write.close()
 
     def downloadAllPictures(self, comments=False):
         """
@@ -157,87 +151,25 @@ class Wrapper():
         Raises:
             RuntimeError if the user is not already logged in.
         """
-        if not self.isLogged:
-            raise RuntimeError('Es necesario estar logueado en la red social')
-
         allAlbums = self.tnt.getAllAlbums()
-# just for testing allAlbums = allAlbums[2:]
+        self.isLogged = (allAlbums != None)
+        if not self.isLogged:
+            return -1
+            
+        totalPictures = 0
         for album in allAlbums:
-            self.downloadPicturesFromAlbum(album[0], album[1], comments)
-
-    def downloadAllComments(self):
-        """
-        Download all the comments for the wall.
-
-        Raises:
-            RuntimeError if the user is not already logged in.
-        """
-        if not self.isLogged:
-            raise RuntimeError('Es necesario estar logueado en la red social')
-
-        os.chdir(ROOTPATH)
-        file2write = open('comentarios.txt', 'w')
-        
-        ended = False
-        page = 0
-        if self.console:
-            print '| Comenzando la descarga de comentarios...'
-        while not ended:
-            if self.console:
-                print '| Pagina', page
-            sleep(0.5)
-            comments = self.tnt.getWall(page)
-            if comments != []:
-                self.saveComments(comments, file2write)
-                page += 5
-            else:
-                ended = True
-
-        file2write.close()
-        
-    def saveComments(self, comments, file2write):
-        """
-        Save a list of comments
-        
-        Args:
-            comments: a list of comments
-            file2write: the file where the info must be written
-        """
-        
-        for comment in comments:
-            file2write.write('******************\r\n')
-            file2write.write(comment[0].encode('utf-8') + ' (' + comment[1].encode('utf-8') + ' ):\r\n')
-            file2write.write(comment[2].encode('utf-8') + '\r\n')
+            totalPictures += album[1]
             
-    def downloadFriends(self):
-        """
-        Save information about your friends
-        
-        Raises:
-            RuntimeError if the user is not already logged in.
-        """
-        if not self.isLogged:
-            raise RuntimeError('Es necesario estar logueado en la red social')
-        
-        os.chdir(ROOTPATH)
-        file2write = open('contactos.txt', 'w')
-        
-        page = 0
-        while True:
-            if self.console:
-                print '| Pagina', (page+1)
-            sleep(0.5)
-            listFriends = self.tnt.getFriendsIDs(page)
-            if not listFriends:
-                break
-                
-            for friend in listFriends:
-                sleep(0.5)
-                birthday = self.tnt.getUserData(friend[0])
-                if birthday != '':
-                    text = friend[1] + ':' + birthday + '\r\n'
-                    file2write.write(text)
-                
-            page += 1
+        alreadyDownloaded = 0
             
-        file2write.close()
+        for album in allAlbums:
+            self.downloadPicturesFromAlbum(album, totalPictures, alreadyDownloaded, comments)
+            alreadyDownloaded += album[1]
+            
+        return 0
+        
+    def goToPrivates(self):
+        """
+        Call the API to go to the private messages' page.
+        """
+        self.tnt.goToPrivates()
