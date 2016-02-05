@@ -64,10 +64,9 @@ APIS = {
 
 
 def normalize(text):
-    t = unicodedata.normalize('NFKD', text)
-    t = re.sub('[^a-zA-Z0-9\n\.]', '-', t)
-    return t
-
+    nfkd_form = unicodedata.normalize('NFKD', text)
+    only_ascii = nfkd_form.encode('ASCII', 'ignore')
+    return only_ascii
 
 
 class API():
