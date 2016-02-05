@@ -92,7 +92,7 @@ def getBrowser():
     
 def printErrorBrowser():
     print '|'
-    print '| Por favor, elige una opcion valida (numeros del 1 al 5)'
+    print '| Por favor, elige una opcion valida (numeros del 1 al 3)'
     raw_input('| Pulsa ENTER para continuar')
 
 def printEnding(text):
@@ -211,7 +211,6 @@ def main():
                     raw_input('> Presiona ENTER para continuar')
                 else:
                     printEnding('tablon')
-                print '| Esta opcion no esta disponible por el momento, lo siento'
             elif respuesta == '5':
                 printHelp()
                 raw_input('> Presiona ENTER para continuar')
