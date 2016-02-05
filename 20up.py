@@ -134,7 +134,7 @@ def printMenu():
     print '| 1 - Backup total (fotos, comentarios de fotos y tablon)'
     print '| 2 - Backup de fotos'
     print '| 3 - Backup de fotos y sus comentarios'
-    print '| 4 - Backup de tablon (proximamente)'
+    print '| 4 - Backup de tablon'
     print '| 5 - Ayuda'
     print '| 6 - Salir'
     print '-' * 60
@@ -178,11 +178,15 @@ def main():
                 printStarting('todo')
                 ret = wrap.downloadAllPictures(True)
                 if ret == -1:
-                    #wrap.downloadAllComments()
                     print '| Primero debes hacer login en la red social'
                     raw_input('> Presiona ENTER para continuar')
                 else:
-                    printEnding('todo')
+                    ret = wrap.downloadAllComments()
+                    if ret == -1:
+                        print '| Primero debes hacer login en la red social'
+                        raw_input('> Presiona ENTER para continuar')
+                    else:
+                        printEnding('todo')
             elif respuesta == '2':
                 printStarting('fotos sin comentarios')
                 ret = wrap.downloadAllPictures(False)
@@ -200,10 +204,14 @@ def main():
                 else:
                     printEnding('fotos y sus comentarios')
             elif respuesta == '4':
+                printStarting('tablon')
+                ret = wrap.downloadAllComments()
+                if ret == -1:
+                    print '| Primero debes hacer login en la red social'
+                    raw_input('> Presiona ENTER para continuar')
+                else:
+                    printEnding('tablon')
                 print '| Esta opcion no esta disponible por el momento, lo siento'
-#                printStarting('tablon')
-#                wrap.downloadAllComments()
-#                printEnding('tablon')
             elif respuesta == '5':
                 printHelp()
                 raw_input('> Presiona ENTER para continuar')

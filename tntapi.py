@@ -48,6 +48,8 @@ INFOS = {
 }
 
 TWENTY_HOST = 'https://www.tuenti.com/'
+TWENTY_HOST_SEC = 'https://www-1.tuenti.com'
+
 URLS = {
     'login'         :   TWENTY_HOST,
     'home'          :   TWENTY_HOST + '#m=Home&func=view_social_home_canvas',
@@ -55,10 +57,18 @@ URLS = {
     'my_privates'   :   TWENTY_HOST + '#m=Messages&func=index',
 }
 
+APIS = {
+    'profile'          :   TWENTY_HOST_SEC + '/?m=Profile&func=index&ajax=1',
+    'wall'             :   TWENTY_HOST_SEC + '?m=Walls&func=view_wall_posts_page&entry_type=1&ajax=1&filter=-2',
+}
+
+
 def normalize(text):
     t = unicodedata.normalize('NFKD', text)
     t = re.sub('[^a-zA-Z0-9\n\.]', '-', t)
     return t
+
+
 
 class API():
     """
@@ -80,7 +90,17 @@ class API():
             
 #        self.driver.implicitly_wait(0.5)
         self.driver.get(URLS['login'])
-            
+
+    def getIsLogged(self):
+        tmp_url = self.driver.current_url
+        self.driver.get(URLS['home'])
+        ret = self.driver.current_url == URLS['home']
+        self.driver.get(tmp_url)
+        return ret
+
+    def getURLApi(self, url):
+        return APIS[url]
+
     def getAllAlbums(self):
         """
         Get all the albums for the given user.
@@ -91,9 +111,6 @@ class API():
         Returns:
             A list of albums.
         """        
-        if self.driver.current_url != URLS['home']:
-            return None
-
         self.driver.get(URLS['my_profile'])
 
         trigger = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'albumSelector')))

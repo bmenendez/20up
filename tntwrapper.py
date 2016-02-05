@@ -23,7 +23,8 @@ This is the API Wrapper for the 20up backup program. This wrapper allows
 a client to retrieve information about his specific account.
 """
 
-import os, urllib, string
+import os, urllib, string, requests
+import json, cookielib, datetime
 from time import sleep
 from tntapi import *
 
@@ -36,6 +37,30 @@ TXT = '.txt'
 def getFullName(picture, counter):
     return normalize(string.zfill(counter, CONSTANT_FILL) + '_' + picture[2] + '_' + picture[1])
 
+def convertCookiesSelenium(cookies):
+    cj = cookielib.LWPCookieJar()
+    for s_cookie in cookies:
+        cj.set_cookie(cookielib.Cookie(
+            version=0,
+            name=s_cookie['name'],
+            value=s_cookie['value'],
+            port='80',
+            port_specified=False,
+            domain=s_cookie['domain'],
+            domain_specified=True,
+            domain_initial_dot=False,
+            path=s_cookie['path'],
+            path_specified=True,
+            secure=s_cookie['secure'],
+            expires=s_cookie['expiry'],
+            discard=False,
+            comment=None,
+            comment_url=None,
+            rest=None,
+            rfc2109=False)
+        )
+    return cj
+
 class Wrapper():
     """
     The wrapper for the tntapi.
@@ -46,9 +71,67 @@ class Wrapper():
     """
     def __init__(self, browser, console=False):
         self.tnt = API(browser)
-        self.isLogged = False
         self.console = console
-            
+
+    def writeWallComment(self, post, fd):
+        c = post.get('contents')
+        n = normalize(post.get('author').get('shortName'))
+        t = post.get('timestamp')
+        t = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
+        for i in c:
+            if i.get('type') == 'String':
+                con = normalize(i.get('string'))
+                fd.write(t + ' | ' + n + ': ' + con + '\n')
+
+    def downloadAllComments(self):
+        """
+        Download all text posts from your wall
+
+        Raises:
+            RuntimeError if the user is not already logged in.
+        """
+        if not self.tnt.getIsLogged():
+            return -1
+
+        if self.console:
+            print '|'
+            print '| Obteniendo informacion del wall'
+
+        if self.console:
+            print '| Creando fichero donde se alojaran todos los comentarios...'
+        file_w = open(ROOTPATH + '/wall.txt', 'w')
+
+        cookiej = convertCookiesSelenium(self.tnt.driver.get_cookies())
+        s = requests.Session()
+        s.cookies = cookiej
+
+        if self.console:
+            print '| Comenzando la descarga de los comentarios...'
+
+        r = s.get(self.tnt.getURLApi('profile'))
+        r = json.loads(r.text[8:])
+        r = r.get('responseMetadata').get('jsonData').get('wall').get('wallData')
+        w_id = r.get('wallId')
+        num = 0
+        total_post = 0
+        actual_post = len(r.get('wallPosts'))
+        wall_url = self.tnt.getURLApi('wall')
+        while actual_post > 0:
+            r = s.get(wall_url + '&wall_id=' + w_id + '&page_num=' + str(num))
+            r = json.loads(r.text[8:])
+            r = r.get('responseMetadata').get('jsonData').get('wall').get('wallData')
+            [self.writeWallComment(x, file_w) for x in r.get('wallPosts')]
+            if len(r.get('wallPosts')):
+                total_post += len(r.get('wallPosts'))
+                num += 1
+                if self.console:
+                    print '| * Descargados: ' + str(total_post) + ' posts ... '
+            actual_post = len(r.get('wallPosts'))
+        file_w.close()
+
+        return 0
+
+
     def downloadPicturesFromAlbum(self, album, totalPictures, alreadyDownloaded, comments=False):
         """
         Download pictures from a given album into the given directory.
@@ -60,7 +143,7 @@ class Wrapper():
         Raises:
             RuntimeError if the user is not already logged in.
         """
-        if not self.isLogged:
+        if not self.tnt.getIsLogged():
             raise RuntimeError('Es necesario estar logueado en la red social')
             
         if self.console:
@@ -151,11 +234,10 @@ class Wrapper():
         Raises:
             RuntimeError if the user is not already logged in.
         """
+        if not self.tnt.getIsLogged():
+            raise RuntimeError('Es necesario estar logueado en la red social')
+
         allAlbums = self.tnt.getAllAlbums()
-        self.isLogged = (allAlbums != None)
-        if not self.isLogged:
-            return -1
-            
         totalPictures = 0
         for album in allAlbums:
             totalPictures += album[1]
