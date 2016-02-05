@@ -25,12 +25,14 @@ a client to retrieve information about his specific account.
 
 import os, urllib, string, requests
 import json, cookielib, datetime
+import shutil
 from time import sleep
 from tntapi import *
 
 CONSTANT_FILL = 6
 ROOTPATH = os.getcwdu()
 PHOTOS = 'fotos'
+CONTACTS = 'contactos'
 JPG = '.jpg'
 TXT = '.txt'
 
@@ -131,6 +133,68 @@ class Wrapper():
 
         return 0
 
+    def writeContact(self, friend, fd, folder):
+        fd.write('- - - - - - - - - \n')
+        id = str(friend.get('id'))
+        fd.write('Id: ' + id)
+        fd.write(' | User: ' + normalize(friend.get('string')))
+        if 'firstName' in friend.get('info'):
+            fd.write(' | First Name: ' + normalize(friend.get('info').get('firstName')))
+        if 'lastName' in friend.get('info'):
+            fd.write(' | Last Name: ' + normalize(friend.get('info').get('lastName')))
+        g = 'Male' if friend.get('info').get('isMale') else 'Female'
+        fd.write(' | Gender: ' + g + '\n')
+        if not 'static' in friend.get('info').get('avatarUrl'):
+            r = requests.get(friend.get('info').get('avatarUrl'), stream=True)
+            with open(folder + '/' + id + '.jpg' , 'wb') as f:
+                r.raw.decode_content = True
+                shutil.copyfileobj(r.raw, f)
+
+
+    def downloadContacts(self):
+        """
+        Download all contacts
+
+        Raises:
+            RuntimeError if the user is not already logged in.
+        """
+        if not self.tnt.getIsLogged():
+            return -1
+
+        if self.console:
+            print '|'
+            print '| Obteniendo informacion de contactos'
+
+        joinPath = os.path.join(ROOTPATH, CONTACTS)
+        if not os.path.exists(joinPath):
+            if self.console:
+                print '| Creando directorio donde se alojaran todos los contactos...'
+            os.makedirs(joinPath)
+            if self.console:
+                print '| Directorio creado'
+
+        if self.console:
+            print '| Creando fichero donde se alojaran todos los datos de los contactos...'
+        file_w = open(joinPath + '/contacts.txt', 'w')
+
+        cookiej = convertCookiesSelenium(self.tnt.driver.get_cookies())
+        s = requests.Session()
+        s.cookies = cookiej
+
+        if self.console:
+            print '| Comenzando la descarga de los contactos...'
+
+        r_csrf = self.tnt.csrf
+        r_data = 'req=%5B%7B%22csfr%22%3A%22' + r_csrf + '%22%7D%2C%7B%22'
+        r_data += 'Search%22%3A%7B%22getTypes%22%3A%7B%22types%22%3A%5B%22u1%22%5D%7D'
+        r_data += '%7D%7D%5D&cup=1&csfr=' + r_csrf + '&csrf=' + r_csrf
+        r = s.post(self.tnt.getURLApi('cupcake'), r_data)
+        r = json.loads(r.text[8:])
+        r = r.get('responseMetadata').get('jsonData').get('u1')
+        r = r.get('results')
+        [self.writeContact(x, file_w, joinPath) for x in r]
+        print '| * Descargados: ' + str(len(r)) + ' contactos ... '
+        file_w.close()
 
     def downloadPicturesFromAlbum(self, album, totalPictures, alreadyDownloaded, comments=False):
         """

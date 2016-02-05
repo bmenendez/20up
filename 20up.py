@@ -131,12 +131,13 @@ def printMenu():
     print '| 20up version ' + version
     print '|'
     print '| Pulsa un numero en funcion de lo que quieras hacer:'
-    print '| 1 - Backup total (fotos, comentarios de fotos y tablon)'
+    print '| 1 - Backup total (fotos y comentarios, tablon y contactos)'
     print '| 2 - Backup de fotos'
     print '| 3 - Backup de fotos y sus comentarios'
     print '| 4 - Backup de tablon'
-    print '| 5 - Ayuda'
-    print '| 6 - Salir'
+    print '| 5 - Backup de contactos'
+    print '| 6 - Ayuda'
+    print '| 7 - Salir'
     print '-' * 60
     
 def printAlert():
@@ -170,7 +171,7 @@ def main():
         wrap = Wrapper(BOPTIONS[browser], True)
 
         respuesta = '0'
-        while respuesta != '6':
+        while respuesta != '7':
             printMenu()
             respuesta = raw_input('> ')
 
@@ -212,9 +213,17 @@ def main():
                 else:
                     printEnding('tablon')
             elif respuesta == '5':
+                printStarting('contactos')
+                ret = wrap.downloadContacts()
+                if ret == -1:
+                    print '| Primero debes hacer login en la red social'
+                    raw_input('> Presiona ENTER para continuar')
+                else:
+                    printEnding('contactos')
+            elif respuesta == '6':
                 printHelp()
                 raw_input('> Presiona ENTER para continuar')
-            elif respuesta == '6':
+            elif respuesta == '7':
                 wrap.goToPrivates()
                 print '|'
                 print '| Antes de salir, mira el regalito del navegador ;-)'

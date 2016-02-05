@@ -60,6 +60,7 @@ URLS = {
 APIS = {
     'profile'          :   TWENTY_HOST_SEC + '/?m=Profile&func=index&ajax=1',
     'wall'             :   TWENTY_HOST_SEC + '?m=Walls&func=view_wall_posts_page&entry_type=1&ajax=1&filter=-2',
+    'cupcake'          :   TWENTY_HOST_SEC + '/index.cupcake.php'
 }
 
 
@@ -77,6 +78,7 @@ class API():
     """
     def __init__(self, browser):
         self.driver = ''
+        self.csrf = None
         try:
             if browser == 'ch':
                 self.driver = webdriver.Chrome()
@@ -94,11 +96,17 @@ class API():
         tmp_url = self.driver.current_url
         self.driver.get(URLS['home'])
         ret = self.driver.current_url == URLS['home']
+        if ret and self.csrf is None:
+            self.csrf = self.getCSRFToken()
         self.driver.get(tmp_url)
         return ret
 
     def getURLApi(self, url):
         return APIS[url]
+
+    def getCSRFToken(self):
+        p = self.driver.page_source.index('csrf')
+        return self.driver.page_source[p+7:p+15]
 
     def getAllAlbums(self):
         """
