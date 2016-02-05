@@ -187,7 +187,12 @@ def main():
                         print '| Primero debes hacer login en la red social'
                         raw_input('> Presiona ENTER para continuar')
                     else:
-                        printEnding('todo')
+                        ret = wrap.downloadContacts()
+                        if ret == -1:
+                            print '| Primero debes hacer login en la red social'
+                            raw_input('> Presiona ENTER para continuar')
+                        else:
+                            printEnding('todo')
             elif respuesta == '2':
                 printStarting('fotos sin comentarios')
                 ret = wrap.downloadAllPictures(False)

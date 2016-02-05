@@ -195,6 +195,7 @@ class Wrapper():
         [self.writeContact(x, file_w, joinPath) for x in r]
         print '| * Descargados: ' + str(len(r)) + ' contactos ... '
         file_w.close()
+        return 0
 
     def downloadPicturesFromAlbum(self, album, totalPictures, alreadyDownloaded, comments=False):
         """
