@@ -369,10 +369,11 @@ class Wrapper():
                 info.get('photo').get('uploaderDate')
             ).strftime('%Y_%m_%d_%H_%M_%S')
             number_photo = 1
-            while os.path.exists(path + '/' + picName + '.jpg'):
-                picName += '_' + str(number_photo)
+            pic_tmp = picName
+            while os.path.exists(path + '/' + pic_tmp + '.jpg'):
+                pic_tmp = picName + '_' + str(number_photo)
                 number_photo += 1
-            picName += '.jpg'
+            picName = pic_tmp + '.jpg'
             urllib.urlretrieve(info.get('photo').get('url'), path + '/' + picName)
 
             if comments and not info.get('comments').get('isEmpty'):
