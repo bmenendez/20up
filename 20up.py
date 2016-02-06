@@ -24,7 +24,7 @@ This program downloads all of the photos, comments, and
 friends' information of an specific user.
 """
 
-import os, traceback
+import traceback
 from tntwrapper import *
 
 version = '4.0'
@@ -92,7 +92,7 @@ def getBrowser():
     
 def printErrorBrowser():
     print '|'
-    print '| Por favor, elige una opcion valida (numeros del 1 al 5)'
+    print '| Por favor, elige una opcion valida (numeros del 1 al 3)'
     raw_input('| Pulsa ENTER para continuar')
 
 def printEnding(text):
@@ -131,12 +131,13 @@ def printMenu():
     print '| 20up version ' + version
     print '|'
     print '| Pulsa un numero en funcion de lo que quieras hacer:'
-    print '| 1 - Backup total (fotos, comentarios de fotos y tablon)'
+    print '| 1 - Backup total (fotos y comentarios, tablon y contactos)'
     print '| 2 - Backup de fotos'
     print '| 3 - Backup de fotos y sus comentarios'
-    print '| 4 - Backup de tablon (proximamente)'
-    print '| 5 - Ayuda'
-    print '| 6 - Salir'
+    print '| 4 - Backup de tablon'
+    print '| 5 - Backup de contactos'
+    print '| 6 - Ayuda'
+    print '| 7 - Salir'
     print '-' * 60
     
 def printAlert():
@@ -152,6 +153,7 @@ def printAlert():
     print '|           4 - Una vez estes dentro de la red, sigue las'
     print '|               instrucciones que te apareceran aqui :-)'
     print '-' * 60
+
 
 def main():
     browser = getBrowser()
@@ -170,7 +172,7 @@ def main():
         wrap = Wrapper(BOPTIONS[browser], True)
 
         respuesta = '0'
-        while respuesta != '6':
+        while respuesta != '7':
             printMenu()
             respuesta = raw_input('> ')
 
@@ -178,11 +180,20 @@ def main():
                 printStarting('todo')
                 ret = wrap.downloadAllPictures(True)
                 if ret == -1:
-                    #wrap.downloadAllComments()
                     print '| Primero debes hacer login en la red social'
                     raw_input('> Presiona ENTER para continuar')
                 else:
-                    printEnding('todo')
+                    ret = wrap.downloadAllComments()
+                    if ret == -1:
+                        print '| Primero debes hacer login en la red social'
+                        raw_input('> Presiona ENTER para continuar')
+                    else:
+                        ret = wrap.downloadContacts()
+                        if ret == -1:
+                            print '| Primero debes hacer login en la red social'
+                            raw_input('> Presiona ENTER para continuar')
+                        else:
+                            printEnding('todo')
             elif respuesta == '2':
                 printStarting('fotos sin comentarios')
                 ret = wrap.downloadAllPictures(False)
@@ -200,14 +211,25 @@ def main():
                 else:
                     printEnding('fotos y sus comentarios')
             elif respuesta == '4':
-                print '| Esta opcion no esta disponible por el momento, lo siento'
-#                printStarting('tablon')
-#                wrap.downloadAllComments()
-#                printEnding('tablon')
+                printStarting('tablon')
+                ret = wrap.downloadAllComments()
+                if ret == -1:
+                    print '| Primero debes hacer login en la red social'
+                    raw_input('> Presiona ENTER para continuar')
+                else:
+                    printEnding('tablon')
             elif respuesta == '5':
+                printStarting('contactos')
+                ret = wrap.downloadContacts()
+                if ret == -1:
+                    print '| Primero debes hacer login en la red social'
+                    raw_input('> Presiona ENTER para continuar')
+                else:
+                    printEnding('contactos')
+            elif respuesta == '6':
                 printHelp()
                 raw_input('> Presiona ENTER para continuar')
-            elif respuesta == '6':
+            elif respuesta == '7':
                 wrap.goToPrivates()
                 print '|'
                 print '| Antes de salir, mira el regalito del navegador ;-)'
