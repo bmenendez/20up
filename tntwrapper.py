@@ -355,9 +355,11 @@ class Wrapper():
                 return
             else:
                 sleep(0.25)
+                pic_com = saved.replace('jpg', 'txt')
+                if os.path.exists(path + '/' + pic_com):
+                    return saved
                 info = self.getPhotoInformation(pictureId)
                 self.saveComments(path + '/' + saved, info.get('comments'))
-                pic_com = saved.replace('jpg', 'txt')
                 print '| Comentarios descargados: ' + pic_com
                 return saved
         else:
@@ -374,10 +376,11 @@ class Wrapper():
             urllib.urlretrieve(info.get('photo').get('url'), path + '/' + picName)
 
             if comments and not info.get('comments').get('isEmpty'):
-                self.saveComments(path + '/' + picName, info.get('comments'))
-                if self.console:
-                    pic_com = picName.replace('jpg', 'txt')
-                    print '| Comentarios descargados: ' + pic_com
+                pic_com = picName.replace('jpg', 'txt')
+                if not os.path.exists(path + '/' + pic_com):
+                    self.saveComments(path + '/' + picName, info.get('comments'))
+                    if self.console:
+                        print '| Comentarios descargados: ' + pic_com
 
             if self.console:
                     print '| Foto descargada: ' + picName
