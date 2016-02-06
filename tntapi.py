@@ -22,8 +22,8 @@ Authors: Borja Menéndez Moreno <info20up@gmail.com>
 This is the API for the 20up backup program. This API allows a client
 to retrieve information about his specific account.
 """
-from time import sleep
-import re, unicodedata
+
+import unicodedata
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -62,6 +62,9 @@ APIS = {
     'wall'             :   TWENTY_HOST_SEC + '?m=Walls&func=view_wall_posts_page&entry_type=1&ajax=1&filter=-2',
     'cupcake'          :   TWENTY_HOST_SEC + '/index.cupcake.php'
 }
+APIS['photos'] = APIS['cupcake'] + '?m=Albums&func=getAlbumPhotos&ajax=1&collection_key='
+APIS['photos_more'] = APIS['cupcake'] + '?m=Albums&func=getMorePhotosPage&ajax=1&collection_key='
+APIS['photo_info'] = APIS['cupcake'] + '?m=Photo&func=preloadPhotos&ajax=1'
 
 
 def normalize(text):
@@ -121,120 +124,25 @@ class API():
         self.driver.get(URLS['my_profile'])
 
         trigger = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'albumSelector')))
-#        trigger = self.driver.find_element_by_id('albumSelector')
         trigger.click()
         
-        myAlbums = []
-        
+        myAlbums = {}
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         allAlbums = soup.find('ul', {'class': INFOS['albums']}).find_all('a', {'class': INFOS['classAlbums']})
         for album in allAlbums:
             withoutSpace = album.getText().split()
-            name = normalize(' '.join(withoutSpace[:-1]).replace(' ','-'))
-            intNumber = withoutSpace[-1][1:-1].split('.')
-            finalNumber = ''
-            for num in intNumber:
-                finalNumber += num
-            number = int(finalNumber)
+            name = normalize(' '.join(withoutSpace[:-1]).replace(' ','_'))
+            number = int(withoutSpace[-1][1:-1].replace('.', ''))
             link = album['href']
-            
-            nnl = [name, number, TWENTY_HOST + link]
-            myAlbums.append(nnl)
+            albumId = link[36:link.index('&s')]
+            myAlbums[albumId] = {
+                'id': albumId,
+                'name': name,
+                'photos': number,
+                'link': TWENTY_HOST + link
+            }
 
         return myAlbums
-        
-    def getFirstPicture(self, linkAlbum):
-        """
-        Get the first picture from a given album.
-        
-        Args:
-            linkAlbum: the <link> of the album to be downloaded.
-            
-        Returns:
-            A pair of (link, title), where <link> is the link itself to the
-            picture and <title> is the title of the picture itself.
-        """
-        self.driver.get(linkAlbum)
-        
-        element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['ulFirstPic'])))
-        
-        html = self.driver.page_source
-        soup = BeautifulSoup(html, 'html.parser')
-        
-        picture = soup.find('ul', {'id' : INFOS['ulFirstPic']}).find_all('li')[0].find('a')
-
-        self.driver.get(TWENTY_HOST + picture['href'])
-        
-    def getPicture(self, comments=False):
-        """
-        Get the picture to be downloaded and the comments, if so.
-        
-        Args:
-            linkPicture: the link to the picture.
-            comments: indicates wether obtain comments of the picture or not.
-            
-        Returns:
-            A shortlist of three elements of (link, timestamp, comments), where
-            <link> is the image to be downloaded, <timestamp> is the submission's
-            date and <comments> is a list of comments.
-        """        
-        element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['idPhotoImage'])))
-        
-        soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-        pic = soup.find('img', {'id': INFOS['idPhotoImage']})
-        image = pic['src']
-        title = pic['alt']
-        date = soup.find('em', {'class': INFOS['picDate']}).getText()
-        date = date.replace(':','-').replace(',','').replace(' ','-')
-        allComments = []
-        if comments:
-            allComments = self.getComments()
-            
-        return [image, title, date, allComments]
-        
-    def getComments(self):
-        """
-        Get the comments of the current picture.
-            
-        Returns:
-            A list of comments of the picture, where a <comment> is a shortlist
-            with the comment itself and the user of the comment.
-        """
-        while True:
-            try:
-                more = WebDriverWait(self.driver, 1).until(EC.presence_of_element_located((By.ID, INFOS['viewMore'])))
-                more.click()
-            except:
-                break
-        
-        soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-        myComments = []
-        allComments = soup.find('ol', {'id': INFOS['picComments']}).find_all('li')
-        for comment in allComments:
-            try:
-                start = comment.find('div', {'class': 'h-mavatar'})
-                user = start.find('div').find('h3').find('a').getText()
-                comm = start.find('p', {'class': INFOS['comment']}).getText()
-                myComments.append([comm, user])
-            except:
-                pass
-            
-        return myComments
-    
-    def getNextPicture(self):
-        """
-        Get the next picture to the given picture.
-        
-        Args:
-            picture: the link to the picture.
-            comments: indicates wether obtain comments of the picture or not.
-        """
-        try:
-            next = self.driver.find_element_by_id(INFOS['next'])
-            next.click()
-        except:
-            next = self.driver.find_element_by_class_name(INFOS['next2'])
-            next.click()
         
     def goToPrivates(self):
         """

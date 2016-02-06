@@ -24,7 +24,7 @@ This program downloads all of the photos, comments, and
 friends' information of an specific user.
 """
 
-import os, traceback
+import traceback
 from tntwrapper import *
 
 version = '4.0'
@@ -153,6 +153,7 @@ def printAlert():
     print '|           4 - Una vez estes dentro de la red, sigue las'
     print '|               instrucciones que te apareceran aqui :-)'
     print '-' * 60
+
 
 def main():
     browser = getBrowser()
