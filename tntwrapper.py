@@ -320,27 +320,37 @@ class Wrapper():
             ids_album = json.loads(file_r.read())
             file_r.close()
 
+        number_photos = 1
         for i in photos:
             if i not in ids_album or comments:
-                fn = self.savePicture(i, albumPath, comments, ids_album.get(i, None))
+                fn = self.savePicture(
+                    i, albumPath, comments, ids_album.get(i, None),
+                    number_photos, album['photos']
+                )
+
                 ids_album[i] = fn
                 file_r = open(albumPath + '/ids.txt', 'w')
                 file_r.write(json.dumps(ids_album))
                 file_r.close()
+            number_photos += 1
 
         page = 1
         while next is not None:
             photos, next = self.getNextAlbumPhotos(album['id'], next, page)
-            page +=1
+            page += 1
             for i in photos:
                 if i not in ids_album or comments:
-                    fn = self.savePicture(i, albumPath, comments, ids_album.get(i, None))
+                    fn = self.savePicture(
+                        i, albumPath, comments, ids_album.get(i, None),
+                        number_photos, album['photos']
+                    )
                     ids_album[i] = fn
                     file_r = open(albumPath + '/ids.txt', 'w')
                     file_r.write(json.dumps(ids_album))
                     file_r.close()
+                number_photos += 1
 
-    def savePicture(self, pictureId, path, comments, saved):
+    def savePicture(self, pictureId, path, comments, saved, n, t):
         """
         Save a picture.
 
@@ -349,6 +359,8 @@ class Wrapper():
             path: folder where picture will be saved.
             comments: flag to determinate if comments will be saved.
             saved: file_name saved.
+            n: number of photo downloaded
+            t: total photos to download
         """
         if saved is not None:
             if not comments:
@@ -384,7 +396,8 @@ class Wrapper():
                         print '| Comentarios descargados: ' + pic_com
 
             if self.console:
-                    print '| Foto descargada: ' + picName
+                porc = str(100 * n / t)
+                print '| Foto descargada: ' + picName + ' [' + porc + '%]'
 
             return picName
             
