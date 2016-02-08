@@ -37,6 +37,7 @@ INFOS = {
     'albums'        :   'pst-pht-dropwdown',
     'classAlbums'   :   'sel-block',
     'ulFirstPic'    :   'albumBody',
+    'albumDisplay'  :   'album-display',
     'idPhotoImage'  :   'photo_image',
     'viewMore'      :   'overlay_wall_view_more',
     'picComments'   :   'wallpost-list-overlay-comments',
@@ -107,7 +108,11 @@ class API():
         for album in allAlbums:
             withoutSpace = album.getText().split()
             name = normalize(' '.join(withoutSpace[:-1]).replace(' ','-'))
-            intNumber = withoutSpace[-1][1:-1].split('.')
+            intNumber = withoutSpace[-1][1:-1]
+            if intNumber.find('.') != -1:
+                intNumber = intNumber.split('.')
+            else:
+                intNumber = intNumber.split(',')
             finalNumber = ''
             for num in intNumber:
                 finalNumber += num
@@ -137,7 +142,7 @@ class API():
         html = self.driver.page_source
         soup = BeautifulSoup(html, 'html.parser')
         
-        picture = soup.find('ul', {'id' : INFOS['ulFirstPic']}).find_all('li')[0].find('a')
+        picture = soup.find('div', {'class' : INFOS['albumDisplay']}).find('ul', {'id' : INFOS['ulFirstPic']}).find_all('li')[0].find('a')
 
         self.driver.get(TWENTY_HOST + picture['href'])
         
@@ -205,6 +210,9 @@ class API():
             picture: the link to the picture.
             comments: indicates wether obtain comments of the picture or not.
         """
+        WebDriverWait(self.driver, 0.1).until(EC.presence_of_element_located((By.ID, INFOS['next'])))
+        WebDriverWait(self.driver, 0.1).until(EC.presence_of_element_located((By.CLASS_NAME, INFOS['next2'])))
+        
         try:
             next = self.driver.find_element_by_id(INFOS['next'])
             next.click()
@@ -217,3 +225,40 @@ class API():
         Open the private messages' page.
         """
         self.driver.get(URLS['my_privates'])
+        
+    def loadMoreComments(self, discards):
+        """
+        Loads more comments of the wall.
+        
+        Args:
+            discards: the number of comments to be discarded.
+        """
+        self.driver.get(URLS['my_profile'])
+        
+        trigger = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'albumSelector')))
+
+        self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+        try:
+            className = "//*[contains(@class, 'act-L')]"
+            triggers = self.driver.find_elements_by_xpath(className)
+            for trigger in triggers:
+                if 'Ver' in trigger.text:
+                    trigger.click()
+                    sleep(0.2)
+                    break
+        except:
+            pass
+        
+        soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+        
+        listComments = soup.find('ol', {'id' : 'wallpost-list'}).find_all('li', {'class' : 'item'})
+        
+        counter = 0
+        returnedList = []
+        for comment in listComments:
+            if counter < discards:
+                counter += 1
+                continue
+            returnedList.append(comment.get_text(separator=' '))
+        
+        return returnedList

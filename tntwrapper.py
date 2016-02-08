@@ -28,8 +28,10 @@ from time import sleep
 from tntapi import *
 
 CONSTANT_FILL = 6
+MAX_TRIES = 5
 ROOTPATH = os.getcwdu()
 PHOTOS = 'fotos'
+COMMENTS = 'comentarios'
 JPG = '.jpg'
 TXT = '.txt'
 
@@ -91,17 +93,20 @@ class Wrapper():
             
         counter = 1
         self.tnt.getFirstPicture(album[2])
+        lastPicture = ['']
         while counter <= album[1]:
             pic = self.tnt.getPicture(comments)
             if counter == 1:
                 firstPicture = pic
             elif pic[0] == firstPicture[0]:
                 break
-            self.savePicture(pic, counter, album[1], totalPictures, alreadyDownloaded + counter)
-            if comments:
-                self.saveComments(pic, counter)
+            if lastPicture[0] != pic[0]:
+                self.savePicture(pic, counter, album[1], totalPictures, alreadyDownloaded + counter)
+                if comments:
+                    self.saveComments(pic, counter)
+                counter += 1
+                lastPicture = pic
             self.tnt.getNextPicture()
-            counter += 1
             
     def savePicture(self, picture, myCounter, totalAlbum, totalPics, alreadyDown):
         """
@@ -173,3 +178,38 @@ class Wrapper():
         Call the API to go to the private messages' page.
         """
         self.tnt.goToPrivates()
+        
+    def downloadAllComments(self):
+        """
+        Download all the comments in the wall.
+        """
+        os.chdir(ROOTPATH)
+        file2write = open(COMMENTS + TXT, 'w')
+        
+        tries = 0
+        discard = 0
+        while True:
+            comments = self.tnt.loadMoreComments(discard)
+            if not comments:
+                if tries < MAX_TRIES:
+                    tries += 1
+                else:
+                    break
+            else:
+                tries = 1
+                discard += len(comments)
+                if self.console:
+                    print '| Descargados ', discard, 'comentarios'
+                self.saveWall(comments, file2write)
+        file2write.close()
+            
+    def saveWall(self, comments, file2write):
+        """
+        Write the comments in the file.
+        
+        Args:
+            comments: the list of comments to be saved.
+            file2write: the file to write in.
+        """
+        for comment in comments:
+            file2write.write(comment.encode('utf-8') + '\r\n\r\n')

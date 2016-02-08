@@ -27,15 +27,14 @@ friends' information of an specific user.
 import os, traceback
 from tntwrapper import *
 
-version = '4.0'
+version = '4.1'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@bmenendez_'
 email = 'info20up@gmail.com'
 
 BOPTIONS = {
     '1':    'ch',
-    '2':    'fi',
-    '3':    'xx'
+    '2':    'fi'
 }
 
 WINDOWS = 'nt'
@@ -86,7 +85,6 @@ def getBrowser():
     print '| Que navegador web utilizas habitualmente?'
     print '| 1 - Google Chrome'
     print '| 2 - Mozilla Firefox'
-    print '| 3 - Otro'
     print '-' * 60
     return raw_input('> ')
     
@@ -94,6 +92,11 @@ def printErrorBrowser():
     print '|'
     print '| Por favor, elige una opcion valida (numeros del 1 al 5)'
     raw_input('| Pulsa ENTER para continuar')
+    
+def printErrorLogin():
+    print '|'
+    print '| Primero debes entrar en la red social'
+    raw_input('> Presiona ENTER para continuar')
 
 def printEnding(text):
     os.system('cls' if os.name == WINDOWS else 'clear')
@@ -134,7 +137,7 @@ def printMenu():
     print '| 1 - Backup total (fotos, comentarios de fotos y tablon)'
     print '| 2 - Backup de fotos'
     print '| 3 - Backup de fotos y sus comentarios'
-    print '| 4 - Backup de tablon (proximamente)'
+    print '| 4 - Backup de tablon'
     print '| 5 - Ayuda'
     print '| 6 - Salir'
     print '-' * 60
@@ -149,7 +152,9 @@ def printAlert():
     print '|           2 - NO cierres el navegador.'
     print '|           3 - Entra a la red social desde el navegador como harias'
     print '|               normalmente.'
-    print '|           4 - Una vez estes dentro de la red, sigue las'
+    print '|           4 - Es altamente recomendable NO usar el navegador'
+    print '|               mientras 20up hace su trabajo'
+    print '|           5 - Una vez estes dentro de la red, sigue las'
     print '|               instrucciones que te apareceran aqui :-)'
     print '-' * 60
 
@@ -158,11 +163,6 @@ def main():
     while browser not in BOPTIONS:
         printErrorBrowser()
         browser = getBrowser()
-        
-    if browser == '3':
-        print '| Por favor, instala uno de los navegadores compatibles con 20up'
-        print '| Despues podras utilizarlo sin problemas'
-        return
         
     printAlert()
     raw_input('> Presiona ENTER para continuar')
@@ -178,32 +178,31 @@ def main():
                 printStarting('todo')
                 ret = wrap.downloadAllPictures(True)
                 if ret == -1:
-                    #wrap.downloadAllComments()
-                    print '| Primero debes hacer login en la red social'
-                    raw_input('> Presiona ENTER para continuar')
+                    printErrorLogin()
                 else:
+                    wrap.downloadAllComments()
                     printEnding('todo')
             elif respuesta == '2':
                 printStarting('fotos sin comentarios')
                 ret = wrap.downloadAllPictures(False)
                 if ret == -1:
-                    print '| Primero debes hacer login en la red social'
-                    raw_input('> Presiona ENTER para continuar')
+                    printErrorLogin()
                 else:
                     printEnding('fotos')
             elif respuesta == '3':
                 printStarting('fotos con comentarios')
                 ret = wrap.downloadAllPictures(True)
                 if ret == -1:
-                    print '| Primero debes hacer login en la red social'
-                    raw_input('> Presiona ENTER para continuar')
+                    printErrorLogin()
                 else:
                     printEnding('fotos y sus comentarios')
             elif respuesta == '4':
-                print '| Esta opcion no esta disponible por el momento, lo siento'
-#                printStarting('tablon')
-#                wrap.downloadAllComments()
-#                printEnding('tablon')
+                printStarting('tablon')
+                ret = wrap.downloadAllComments()
+                if ret == -1:
+                    printErrorLogin()
+                else:
+                    printEnding('tablon')
             elif respuesta == '5':
                 printHelp()
                 raw_input('> Presiona ENTER para continuar')
