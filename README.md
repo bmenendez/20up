@@ -20,3 +20,27 @@ You can generate your own executable for Windows and check the MD5SUM if you wan
     FCIV -md5 20up.exe
     
 This way, you should have an MD5SUM calculated for your executable file. Now you are able to check this number with the one written in [the official 20up MD5SUM file](https://github.com/bmenendez/20up/blob/master/windows/MD5SUM).
+
+#### Dockerized support
+
+#### Build
+
+```
+export PROJECT_DIR=$HOME/Projects/20up
+git clone https://github.com/bmenendez/20up.git $PROJECT_DIR
+cd $PROJECT_DIR
+docker build -t bmenendez/20up .
+```
+
+#### Run
+
+```
+export PROJECT_DIR=$HOME/Projects/20up
+cd $PROJECT_DIR
+mkdir download
+docker run -it -v $PWD/download:/volume bmenendez/20up
+```
+
+#### Use
+
+After following the instructions, you will find the downloaded assets in "$PROJECT_DIR/download" :)
