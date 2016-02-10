@@ -138,6 +138,7 @@ class API():
         self.driver.get(linkAlbum)
         
         element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['ulFirstPic'])))
+        sleep(3)
         
         html = self.driver.page_source
         soup = BeautifulSoup(html, 'html.parser')
