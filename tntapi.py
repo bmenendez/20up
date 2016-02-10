@@ -78,9 +78,20 @@ class API():
                 raise RuntimeError('El navegador web elegido no esta soportado por 20up')
         except:
             raise RuntimeError('Imposible abrir el navegador web; por favor, elige otro')
-            
-#        self.driver.implicitly_wait(0.5)
+
         self.driver.get(URLS['login'])
+        
+    def waitForLogin(self):
+        """
+        Wait for the user to be logged into the social network.
+        """
+        logged = False
+        while not logged:
+            try:
+                WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'sideBarPlaceHolder')))
+                logged = True
+            except:
+                pass
             
     def getAllAlbums(self):
         """
@@ -91,14 +102,14 @@ class API():
 
         Returns:
             A list of albums.
-        """        
-        if self.driver.current_url != URLS['home']:
-            return None
-
+        """
         self.driver.get(URLS['my_profile'])
 
         trigger = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'albumSelector')))
-#        trigger = self.driver.find_element_by_id('albumSelector')
+        
+        if self.driver.current_url != URLS['my_profile']:
+            return None
+        
         trigger.click()
         
         myAlbums = []
@@ -124,27 +135,34 @@ class API():
 
         return myAlbums
         
-    def getFirstPicture(self, linkAlbum):
+    def getFirstPicture(self, linkAlbum, oldFirstPictureLink=''):
         """
         Get the first picture from a given album.
         
         Args:
             linkAlbum: the <link> of the album to be downloaded.
+            oldFirstPictureLink: the <link> of the first picture of the
+                                 previous album.
             
         Returns:
-            A pair of (link, title), where <link> is the link itself to the
-            picture and <title> is the title of the picture itself.
+            A <link> to the picture.
         """
         self.driver.get(linkAlbum)
-        
-        element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['ulFirstPic'])))
-        
-        html = self.driver.page_source
-        soup = BeautifulSoup(html, 'html.parser')
-        
-        picture = soup.find('div', {'class' : INFOS['albumDisplay']}).find('ul', {'id' : INFOS['ulFirstPic']}).find_all('li')[0].find('a')
 
-        self.driver.get(TWENTY_HOST + picture['href'])
+        picture = oldFirstPictureLink
+        while picture == oldFirstPictureLink:
+            element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['ulFirstPic'])))
+            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+            try:
+                picture = soup.find('div', {'class' : INFOS['albumDisplay']}).find('ul', {'id' : INFOS['ulFirstPic']}).find_all('li')[0].find('a')
+                picture = TWENTY_HOST + picture['href']
+            except:
+                pass
+            sleep(0.2)
+
+        self.driver.get(picture)
+        
+        return picture
         
     def getPicture(self, comments=False):
         """
@@ -155,9 +173,10 @@ class API():
             comments: indicates wether obtain comments of the picture or not.
             
         Returns:
-            A shortlist of three elements of (link, timestamp, comments), where
-            <link> is the image to be downloaded, <timestamp> is the submission's
-            date and <comments> is a list of comments.
+            A shortlist of four elements of (link, title, date, comments),
+            where <link> is the image to be downloaded, <title> is the title
+            of the picture, <date> is the submission's date and <comments> is
+            a list of comments.
         """        
         element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['idPhotoImage'])))
         
@@ -179,7 +198,7 @@ class API():
             
         Returns:
             A list of comments of the picture, where a <comment> is a shortlist
-            with the comment itself and the user of the comment.
+            with the comment itself (<user date: comment>).
         """
         while True:
             try:
@@ -193,10 +212,7 @@ class API():
         allComments = soup.find('ol', {'id': INFOS['picComments']}).find_all('li')
         for comment in allComments:
             try:
-                start = comment.find('div', {'class': 'h-mavatar'})
-                user = start.find('div').find('h3').find('a').getText()
-                comm = start.find('p', {'class': INFOS['comment']}).getText()
-                myComments.append([comm, user])
+                myComments.append(comment.get_text(separator=' ').replace(' Eliminar', ':'))
             except:
                 pass
             
@@ -205,19 +221,17 @@ class API():
     def getNextPicture(self):
         """
         Get the next picture to the given picture.
-        
-        Args:
-            picture: the link to the picture.
-            comments: indicates wether obtain comments of the picture or not.
         """
         WebDriverWait(self.driver, 0.1).until(EC.presence_of_element_located((By.ID, INFOS['next'])))
         WebDriverWait(self.driver, 0.1).until(EC.presence_of_element_located((By.CLASS_NAME, INFOS['next2'])))
         
         try:
             next = self.driver.find_element_by_id(INFOS['next'])
+            self.driver.execute_script("document.getElementById('" + INFOS['next'] + "').focus();")
             next.click()
         except:
             next = self.driver.find_element_by_class_name(INFOS['next2'])
+            self.driver.execute_script("document.getElementById('" + INFOS['next2'] + "').focus();")
             next.click()
         
     def goToPrivates(self):
@@ -228,7 +242,7 @@ class API():
         
     def loadMoreComments(self, discards):
         """
-        Loads more comments of the wall.
+        Load more comments of the wall.
         
         Args:
             discards: the number of comments to be discarded.
@@ -236,6 +250,9 @@ class API():
         self.driver.get(URLS['my_profile'])
         
         trigger = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'albumSelector')))
+        
+        if self.driver.current_url != URLS['my_profile']:
+            raise RuntimeError('Es necesario entrar primero a la red social')
 
         self.driver.execute_script('window.scrollTo(0, document.body.scrollHeight);')
         try:
@@ -244,7 +261,7 @@ class API():
             for trigger in triggers:
                 if 'Ver' in trigger.text:
                     trigger.click()
-                    sleep(0.2)
+                    sleep(0.5)
                     break
         except:
             pass

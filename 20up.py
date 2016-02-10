@@ -27,7 +27,7 @@ friends' information of an specific user.
 import os, traceback
 from tntwrapper import *
 
-version = '4.1'
+version = '4.2'
 web = 'http://bmenendez.github.io/20up'
 twitter = '@bmenendez_'
 email = 'info20up@gmail.com'
@@ -83,7 +83,7 @@ def getBrowser():
     os.system('cls' if os.name == WINDOWS else 'clear')
     print '-' * 60
     print '| Que navegador web utilizas habitualmente?'
-    print '| 1 - Google Chrome'
+    print '| 1 - Google Chrome (necesitas ChromeDriver, mira las instrucciones en ' + web + ')'
     print '| 2 - Mozilla Firefox'
     print '-' * 60
     return raw_input('> ')
@@ -117,7 +117,7 @@ def printHelp():
     print '| derivados que se le puedan dar a esta aplicacion.'
     print '| 20up tiene como proposito poder realizar un backup de tu'
     print '| cuenta de usuario, de forma que tendras todas tus'
-    print '| fotos y sus comentarios, y comentarios de tablon (proximamente).'
+    print '| fotos y sus comentarios, y comentarios de tablon.'
     print '| 20up no compromete ni tu seguridad ni tu privacidad.'
     print '| 20up es software libre, liberado bajo licencia GPLv3.'
     print '| Por favor, si tienes alguna duda, visita la web:'
@@ -165,10 +165,11 @@ def main():
         browser = getBrowser()
         
     printAlert()
-    raw_input('> Presiona ENTER para continuar')
+    print '| Esperando a que entres en la red social...'
+    wrap = Wrapper(BOPTIONS[browser], True)
+    wrap.waitForLogin()
+    raw_input('> Dentro! :D Presiona ENTER para continuar')
     try:
-        wrap = Wrapper(BOPTIONS[browser], True)
-
         respuesta = '0'
         while respuesta != '6':
             printMenu()

@@ -28,7 +28,7 @@ from time import sleep
 from tntapi import *
 
 CONSTANT_FILL = 6
-MAX_TRIES = 5
+MAX_TRIES = 10
 ROOTPATH = os.getcwdu()
 PHOTOS = 'fotos'
 COMMENTS = 'comentarios'
@@ -50,13 +50,19 @@ class Wrapper():
         self.tnt = API(browser)
         self.isLogged = False
         self.console = console
+        
+    def waitForLogin(self):
+        self.tnt.waitForLogin()
             
-    def downloadPicturesFromAlbum(self, album, totalPictures, alreadyDownloaded, comments=False):
+    def downloadPicturesFromAlbum(self, album, totalPictures, alreadyDownloaded, oldFirstPicture, comments=False):
         """
         Download pictures from a given album into the given directory.
 
         Args:
             album: the album.
+            totalPictures: the total number of pictures of the user.
+            alreadyDownloaded: the number of pictures already downloaded.
+            oldFirstPicture: the first picture of the previous album.
             comments: indicates wether obtain comments of the picture or not.
 
         Raises:
@@ -92,7 +98,8 @@ class Wrapper():
             print '| Comenzando la descarga de las fotos del album...'
             
         counter = 1
-        self.tnt.getFirstPicture(album[2])
+        newFirstPicture = self.tnt.getFirstPicture(album[2], oldFirstPicture)
+        firstPicture = ''
         lastPicture = ['']
         while counter <= album[1]:
             pic = self.tnt.getPicture(comments)
@@ -108,6 +115,8 @@ class Wrapper():
                 lastPicture = pic
             self.tnt.getNextPicture()
             
+        return newFirstPicture
+            
     def savePicture(self, picture, myCounter, totalAlbum, totalPics, alreadyDown):
         """
         Save a picture.
@@ -115,7 +124,11 @@ class Wrapper():
         Args:
             picture: a picture to be saved.
             myCounter: the counter for the picture.
+            totalAlbum: the number of pictures of the album.
+            totalPics: the number of pictures of the user.
+            alreadyDown: the number of pictures already downloaded.
         """
+        sleep(0.25)
         picName = getFullName(picture, myCounter) + JPG
         if not os.path.exists(picName):
             if self.console:
@@ -124,7 +137,6 @@ class Wrapper():
                 print '|'
                 print '| [' + totalPerc + '% total] [' + albumPerc + '% album]'
                 print '| Descargando foto ' + picName + '...'
-            sleep(0.25)
             urllib.urlretrieve(picture[0], picName)
             
     def saveComments(self, picture, myCounter):
@@ -142,8 +154,7 @@ class Wrapper():
             file2write = open(commentsFileName, 'w')
             for comment in picture[3]:
                 file2write.write('******************\r\n')
-                file2write.write(comment[1].encode('utf-8') + ':\r\n')
-                file2write.write(comment[0].encode('utf-8') + '\r\n')
+                file2write.write(comment.encode('utf-8') + '\r\n')
             file2write.close()
 
     def downloadAllPictures(self, comments=False):
@@ -166,9 +177,9 @@ class Wrapper():
             totalPictures += album[1]
             
         alreadyDownloaded = 0
-            
+        oldFirstPicture = ''
         for album in allAlbums:
-            self.downloadPicturesFromAlbum(album, totalPictures, alreadyDownloaded, comments)
+            oldFirstPicture = self.downloadPicturesFromAlbum(album, totalPictures, alreadyDownloaded, oldFirstPicture, comments)
             alreadyDownloaded += album[1]
             
         return 0
@@ -193,6 +204,7 @@ class Wrapper():
             if not comments:
                 if tries < MAX_TRIES:
                     tries += 1
+                    sleep(0.3)
                 else:
                     break
             else:
