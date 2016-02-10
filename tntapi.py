@@ -227,12 +227,20 @@ class API():
         
         try:
             next = self.driver.find_element_by_id(INFOS['next'])
-            self.driver.execute_script("document.getElementById('" + INFOS['next'] + "').focus();")
-            next.click()
+            try:
+                self.driver.execute_script("document.getElementById('" + INFOS['next'] + "').focus();")
+            except:
+                pass
+            finally:
+                next.click()
         except:
             next = self.driver.find_element_by_class_name(INFOS['next2'])
-            self.driver.execute_script("document.getElementById('" + INFOS['next2'] + "').focus();")
-            next.click()
+            try:
+                self.driver.execute_script("document.getElementById('" + INFOS['next2'] + "').focus();")
+            except:
+                pass
+            finally:
+                next.click()
         
     def goToPrivates(self):
         """
