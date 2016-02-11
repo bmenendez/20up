@@ -101,8 +101,10 @@ class Wrapper():
         newFirstPicture = self.tnt.getFirstPicture(album[2], oldFirstPicture)
         firstPicture = ''
         lastPicture = ['']
+        oldSrc = ''
         while counter <= album[1]:
-            pic = self.tnt.getPicture(comments)
+            pic = self.tnt.getPicture(oldSrc, comments)
+            oldSrc = pic
             if counter == 1:
                 firstPicture = pic
             elif pic[0] == firstPicture[0]:

@@ -46,6 +46,7 @@ INFOS = {
     'comment'       :   'wall-delete',
     'next'          :   'photo_nav_next',
     'next2'         :   'pht-nav-next',
+    'next3'         :   'i-nav-next',
 }
 
 TWENTY_HOST = 'https://www.tuenti.com/'
@@ -164,7 +165,7 @@ class API():
         
         return picture
         
-    def getPicture(self, comments=False):
+    def getPicture(self, oldSrc, comments=False):
         """
         Get the picture to be downloaded and the comments, if so.
         
@@ -178,7 +179,10 @@ class API():
             of the picture, <date> is the submission's date and <comments> is
             a list of comments.
         """        
-        element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['idPhotoImage'])))
+        newSrc = oldSrc
+        while newSrc == oldSrc:
+            newSrc = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['idPhotoImage']))).get_attribute('src')
+            sleep(0.1)
         
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         pic = soup.find('img', {'id': INFOS['idPhotoImage']})
@@ -209,12 +213,15 @@ class API():
         
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         myComments = []
-        allComments = soup.find('ol', {'id': INFOS['picComments']}).find_all('li')
-        for comment in allComments:
-            try:
-                myComments.append(comment.get_text(separator=' ').replace(' Eliminar', ':'))
-            except:
-                pass
+        try:
+            allComments = soup.find('ol', {'id': INFOS['picComments']}).find_all('li')
+            for comment in allComments:
+                try:
+                    myComments.append(comment.get_text(separator=' ').replace(' Eliminar', ':'))
+                except:
+                    pass
+        except:
+            pass
             
         return myComments
     
@@ -223,20 +230,20 @@ class API():
         Get the next picture to the given picture.
         """
         WebDriverWait(self.driver, 0.1).until(EC.presence_of_element_located((By.ID, INFOS['next'])))
-        WebDriverWait(self.driver, 0.1).until(EC.presence_of_element_located((By.CLASS_NAME, INFOS['next2'])))
+        WebDriverWait(self.driver, 0.1).until(EC.presence_of_element_located((By.CLASS_NAME, INFOS['next3'])))
         
         try:
-            next = self.driver.find_element_by_id(INFOS['next'])
+            next = self.driver.find_element_by_class_name(INFOS['next3'])
             try:
-                self.driver.execute_script("document.getElementById('" + INFOS['next'] + "').focus();")
+                self.driver.execute_script("document.getElementById('" + INFOS['next3'] + "').focus();")
             except:
                 pass
             finally:
                 next.click()
         except:
-            next = self.driver.find_element_by_class_name(INFOS['next2'])
+            next = self.driver.find_element_by_id(INFOS['next'])
             try:
-                self.driver.execute_script("document.getElementById('" + INFOS['next2'] + "').focus();")
+                self.driver.execute_script("document.getElementById('" + INFOS['next'] + "').focus();")
             except:
                 pass
             finally:
