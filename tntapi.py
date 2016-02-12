@@ -151,17 +151,20 @@ class API():
         self.driver.get(linkAlbum)
 
         picture = oldFirstPictureLink
-        while picture == oldFirstPictureLink:
-            element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['ulFirstPic'])))
-            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-            try:
-                picture = soup.find('div', {'class' : INFOS['albumDisplay']}).find('ul', {'id' : INFOS['ulFirstPic']}).find_all('li')[0].find('a')
-                picture = TWENTY_HOST + picture['href']
-            except:
-                pass
-            sleep(0.2)
+        try:
+            while picture == oldFirstPictureLink:
+                element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, INFOS['ulFirstPic'])))
+                soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+                try:
+                    picture = soup.find('div', {'class' : INFOS['albumDisplay']}).find('ul', {'id' : INFOS['ulFirstPic']}).find_all('li')[0].find('a')
+                    picture = TWENTY_HOST + picture['href']
+                except:
+                    pass
+                sleep(0.2)
 
-        self.driver.get(picture)
+            self.driver.get(picture)
+        except:
+            pass
         
         return picture
         
@@ -229,25 +232,20 @@ class API():
         """
         Get the next picture to the given picture.
         """
-        WebDriverWait(self.driver, 0.1).until(EC.presence_of_element_located((By.ID, INFOS['next'])))
-        WebDriverWait(self.driver, 0.1).until(EC.presence_of_element_located((By.CLASS_NAME, INFOS['next3'])))
-        
         try:
-            next = self.driver.find_element_by_class_name(INFOS['next3'])
-            try:
-                self.driver.execute_script("document.getElementById('" + INFOS['next3'] + "').focus();")
-            except:
-                pass
-            finally:
-                next.click()
-        except:
-            next = self.driver.find_element_by_id(INFOS['next'])
+            next = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, INFOS['next'])))
             try:
                 self.driver.execute_script("document.getElementById('" + INFOS['next'] + "').focus();")
             except:
                 pass
             finally:
                 next.click()
+        except:
+            try:
+                next = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, INFOS['next3'])))
+                next.click()
+            except:
+                pass
         
     def goToPrivates(self):
         """
